@@ -1,0 +1,13 @@
+# Gradle 빌드 디렉토리
+.gradle/
+build/
+
+# IntelliJ IDEA 설정 파일
+.idea/
+*.iml
+out/
+
+# Eclipse 및 STS 설정 파일
+.settings/
+.vscode/
+bin/

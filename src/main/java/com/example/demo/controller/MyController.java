@@ -19,4 +19,8 @@ public class MyController {
     public String index2() {
         return "index2";
     }
+    @GetMapping("/3")
+    public String index3() {
+        return "index3";
+    }
 }

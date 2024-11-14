@@ -14,6 +14,9 @@ public class MyController {
     @GetMapping("/1")
     public String index1() {
         return "index1";
-        
+    }
+    @GetMapping("/2")
+    public String index2() {
+        return "index2";
     }
 }

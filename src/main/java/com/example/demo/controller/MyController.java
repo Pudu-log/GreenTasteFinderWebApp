@@ -10,4 +10,10 @@ public class MyController {
         return "index";
         
     }
+    
+    @GetMapping("/1")
+    public String index1() {
+        return "index1";
+        
+    }
 }

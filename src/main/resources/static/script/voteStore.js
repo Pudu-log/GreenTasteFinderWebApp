@@ -2,20 +2,18 @@ import {func} from "/static/script/voteStoreFunc.js";
 
 $(function () {
 
-    let param = {
-        date: document.querySelector("input[name=title-date]").value
-    };
-    let url = "/storeInfo/" + param.date;
 
-    func.get.storeInfo(url, param)
-        .then(function (res) {
 
-            func.set.storeInfo(res.data);
+    func.get.storeInfo();
 
-        }).catch(function (error) {
+    document.querySelector("input[name=title-date]").addEventListener("change", function () {
+        let param = {
+            date: document.querySelector("input[name=title-date]").value
+        };
+        let url = "/storeInfo/" + param.date;
 
-            console.log(error);
+        func.get.storeInfo(url, param);
+    });
 
-        });
 
 })

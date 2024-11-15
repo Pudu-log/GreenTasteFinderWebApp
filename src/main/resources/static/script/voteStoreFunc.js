@@ -2,12 +2,22 @@ export let func = {
 
     get: {
 
-        storeInfo: (url, param) => {
-            return axios.post(url, param, {
+        storeInfo: () => {
+
+            let param = {
+                date: document.querySelector("input[name=title-date]").value
+            };
+            let url = "/storeInfo/" + param.date;
+
+            axios.post(url, param, {
                 "Content-Type": "application/x-www-form-urlencoded",
-            })
+            }).then(function (res) {
+                func.set.storeInfo(res.data);
+            }).catch(function (error) {
+                console.log(error);
+            });
         },
-        distance : (lat1, lon1, lat2, lon2) => {
+        distance: (lat1, lon1, lat2, lon2) => {
             const EARTH_RADIUS_M = 6371000; // 지구 반지름 (미터 단위)
 
             // 위도와 경도를 라디안으로 변환하는 함수
@@ -48,7 +58,7 @@ export let func = {
         storeInfo: (stores) => {
             let html = ``;
             console.log(stores);
-            for (let store of stores){
+            for (let store of stores) {
                 let img = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${store?.photos[0]?.photo_reference}&key=AIzaSyCd2XzSrgjduTBn27Faiz_H5pM8Xm81GoY`;
                 let lat1 = store.geometry.location.lat;
                 let lng1 = store.geometry.location.lng;

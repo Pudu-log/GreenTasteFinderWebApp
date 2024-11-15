@@ -1,24 +1,35 @@
 package com.example.demo.controller.myPage;
 
-import com.example.demo.dto.MemberDto;
 import com.example.demo.service.MyPageService;
+import com.example.demo.utils.GooglePlaceApi;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-@RestController("/api")
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/my")
 public class MyPageApiController {
     private final MyPageService myPageService;
+    private final GooglePlaceApi googlePlaceApi;
 
     @Autowired
-    public MyPageApiController(MyPageService myPageService) {
+    public MyPageApiController(MyPageService myPageService, GooglePlaceApi googlePlaceApi) {
         this.myPageService = myPageService;
+        this.googlePlaceApi = googlePlaceApi;
     }
 
-    @PostMapping("/updateMember")
-    int update(@RequestBody MemberDto memberDto) {
-        return myPageService.update(memberDto);
+    @GetMapping("/getFavorList")
+    public List<JsonNode> getFavorList(@RequestParam("val") String val, @RequestParam("id") String id) {
+        System.out.println(val);
+        System.out.println(id);
+        List<String> myPage = myPageService.getActStoreList(val, id);
+        System.out.println(myPage);
+
+        googlePlaceApi.init(myPage);
+        System.out.println(googlePlaceApi.getData());
+        return googlePlaceApi.getData();
     }
 }
+

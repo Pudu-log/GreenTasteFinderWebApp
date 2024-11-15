@@ -1,6 +1,8 @@
 package com.example.demo.controller.myPage;
 
 import com.example.demo.service.MyPageService;
+import com.example.demo.utils.GooglePlaceApi;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -8,11 +10,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 @Controller
 public class MyPageController {
 
+    private final MyPageService myPageService;
+
     @Autowired
-    MyPageService myPageService;
+    public MyPageController(MyPageService myPageService) {
+        this.myPageService = myPageService;
+    }
 
     @RequestMapping("/myPage")
 

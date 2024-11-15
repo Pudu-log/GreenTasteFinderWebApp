@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 @Service
 public class MyPageService {
@@ -24,5 +25,14 @@ public class MyPageService {
     // 아이디로 멤버 가져오기
     public MemberDto getMemberById(String id) {
         return memberDao.getMemberById(id);
+    }
+
+    public List<String> getActStoreList(String val, String id) {
+        if (val.equals("B")) {
+            return myPageActDao.getFavorStoreList(id);
+        } else if (val.equals("G")) {
+            return myPageActDao.getGoodStoreList(id);
+        }
+        return null;
     }
 }

@@ -1,7 +1,7 @@
 package com.example.demo.controller.member;
 
 import com.example.demo.dto.MemberDto;
-import com.example.demo.dto.SelectBoxDto;
+import com.example.demo.dto.RoomDto;
 import com.example.demo.service.member.MemberService;
 import com.example.demo.type.ResponseStatus;
 import com.example.demo.utils.ApiResponse;
@@ -53,8 +53,8 @@ public class MemberApiController {
 
 
     @GetMapping("/login/select-box")
-    public ResponseEntity<ApiResponse<List<SelectBoxDto>>> selectBox() {
-        List<SelectBoxDto> selectBoxList = memberService.getSelectBox();
+    public ResponseEntity<ApiResponse<List<RoomDto>>> selectBox() {
+        List<RoomDto> selectBoxList = memberService.getSelectBox();
         return ResponseEntity.ok(new ApiResponse<>(ResponseStatus.SUCCESS, selectBoxList));
     }
 

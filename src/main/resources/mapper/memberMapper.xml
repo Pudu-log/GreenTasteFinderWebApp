@@ -8,7 +8,7 @@
         VALUES (#{member.id},#{member.pw},#{member.name},#{member.roomCode},#{member.email},#{member.birth})
     </insert>
 
-    <select id="selectBox" resultType="com.example.demo.dto.SelectBoxDto">
+    <select id="selectBox" resultType="com.example.demo.dto.RoomDto">
         SELECT room_code as roomCode , room_name as roomName FROM tbl_room;
     </select>
 

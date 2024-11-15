@@ -1,22 +1,21 @@
 package com.example.demo.service;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-
+import com.example.demo.model.Restaurant;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.example.demo.model.Restaurant;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 @Service
-//11.15 작성 - 경 
+//11.15 작성 - 경
 public class MainPageService {
 
     @Value("${google.api.key}")
@@ -33,6 +32,7 @@ public class MainPageService {
         this.objectMapper = objectMapper;
     }
 
+
     public List<Restaurant> getNearbyRestaurants(double latitude, double longitude) {
         List<Restaurant> restaurants = new ArrayList<>();
         String url = String.format("%s?location=%f,%f&radius=1000&type=restaurant&key=%s",
@@ -47,7 +47,7 @@ public class MainPageService {
             JsonNode results = root.path("results");
             for (JsonNode node : results) {
                 Restaurant restaurant = parseRestaurantFromJson(node);
-                
+
                 // 음식점의 위치 정보 가져오기
                 double restaurantLat = node.path("geometry").path("location").path("lat").asDouble();
                 double restaurantLng = node.path("geometry").path("location").path("lng").asDouble();
@@ -60,9 +60,9 @@ public class MainPageService {
             }
 
             // 거리 기준으로 오름차순 정렬
-           restaurants.sort(Comparator.comparingDouble(Restaurant::getDistance));
+            restaurants.sort(Comparator.comparingDouble(Restaurant::getDistance));
             // 별점 기준으로 내림차순 정렬 (높은 순으로 정렬)
-           // restaurants.sort(Comparator.comparingDouble(Restaurant::getRating).reversed());
+            // restaurants.sort(Comparator.comparingDouble(Restaurant::getRating).reversed());
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -87,8 +87,8 @@ public class MainPageService {
         restaurant.setDistance(1.0); // 예시로 거리 설정, 필요시 추가 구현
         return restaurant;
     }
-    
- // 두 지점 간의 거리 계산 (Haversine Formula)
+
+    // 두 지점 간의 거리 계산 (Haversine Formula)
     private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
         final int EARTH_RADIUS = 6371; // 지구의 반지름 (단위: km)
 
@@ -100,9 +100,8 @@ public class MainPageService {
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         return EARTH_RADIUS * c; // 거리 반환 (단위: km)
     }
-    
-    
-    
+
+
 }
 
 // RestTemplate을 빈으로 등록하는 구성 클래스

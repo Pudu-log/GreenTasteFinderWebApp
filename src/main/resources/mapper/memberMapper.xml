@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.dao.member.IMemberDao">
+    <insert id="memberInsert">
+        INSERT INTO tbl_user (id,pw,name,room_code,email,birth)
+        VALUES (#{member.id},#{member.pw},#{member.name},#{member.roomCode},#{member.email},#{member.birth})
+    </insert>
+
+    <select id="selectBox" resultType="com.example.demo.dto.SelectBoxDto">
+        SELECT room_code as roomCode , room_name as roomName FROM tbl_room;
+    </select>
+
+    <select id="idCheck" resultType="_int">
+        SELECT COUNT(*) FROM tbl_user WHERE id = #{id}
+    </select>
+
+    <select id="login" resultType="com.example.demo.dto.MemberDto">
+        SELECT id,name,room_code as roomCode, admin_yn as adminYn FROM tbl_user WHERE id = #{id} and pw = #{pw}
+    </select>
+</mapper>

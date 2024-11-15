@@ -33,45 +33,14 @@
             </div>
 
             <div class="store-content">
-                <div class="store-box">
-                    <div class="store-img border-tl-10">
-                        <img class="border-tl-10" src="https://breffee.net/data/editor/2210/20221013104826_fd5326c8ac17c04c88d91f03a8d313d8_5r8y.jpg">
-                    </div>
-                    <div class="store-wrap">
-                        <div class="store-title border-tr-10">
-                            <span class="border-tr-10"> 나는 가게이름~ 나는 가게이름~ 나는 가게이름~ 나는 가게이름~ 나는 가게이름~ 나는 가게이름~ 나는 가게이름~ 나는 가게이름~</span>
-                        </div>
-                        <div class="store-gbn">
-                            <span>나는 중식!</span>
-                        </div>
-                        <div class="store-distance">
-                            <span>100m</span>
-                        </div>
-                    </div>
-                    <div class="store-2wrap">
-                        <div class="store-addr">
-                            <span>나는 주소~ 나는 주소~ 나는 주소~ 나는 주소~ 나는 주소~ 나는 주소~ 나는 주소~ 나는 주소~ 나는 주소~ 나는 주소~ </span>
-                        </div>
 
-                    </div>
-                </div>
-                <div class="store-box"></div>
-                <div class="store-box"></div>
-                <div class="store-box"></div>
-                <div class="store-box"></div>
-                <div class="store-box"></div>
-                <div class="store-box"></div>
             </div>
-            <%--<div class="store-list">
-                <div class="store">
-                    <div class="store-img">
-                        <img src="https://breffee.net/data/editor/2210/20221013104826_fd5326c8ac17c04c88d91f03a8d313d8_5r8y.jpg">
-                    </div>
-                </div>
-            </div>--%>
         </div>
 
         <jsp:include page="layout/footer.jsp" />
 
     </body>
 </html>
+
+<script type="module" src="/static/script/voteStore.js"></script>
+

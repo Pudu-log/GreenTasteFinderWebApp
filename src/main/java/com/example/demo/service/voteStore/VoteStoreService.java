@@ -1,7 +1,7 @@
-package com.example.demo.service;
+package com.example.demo.service.voteStore;
 
-import com.example.demo.dao.IVoteStoreDao;
-import com.example.demo.dto.VoteStoreDto;
+import com.example.demo.dao.voteStore.IVoteStoreDao;
+import com.example.demo.dto.voteStore.VoteStoreDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,14 +26,14 @@ public class VoteStoreService {
     @Value("${google.api.key}")
     private String API_KEY;
     private static final String URL = "https://maps.googleapis.com/maps/api/place/details/json";
-    private static String[] place_keys;
+    private static List<String> place_keys;
 
     public VoteStoreService(RestTemplate restTemplate, ObjectMapper objectMapper) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
     }
 
-    public void init(String[] places) {
+    public void init(List<String> places) {
         place_keys = places;
     }
 
@@ -79,6 +79,10 @@ public class VoteStoreService {
 
     public List<VoteStoreDto> getList(){
         return voteStoreDao.getList();
+    }
+
+    public List<String> getStoreId(String date){
+        return voteStoreDao.getStoreId(date);
     }
 
 }

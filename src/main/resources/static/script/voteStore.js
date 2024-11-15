@@ -7,12 +7,11 @@ $(function () {
     func.get.storeInfo();
 
     document.querySelector("input[name=title-date]").addEventListener("change", function () {
-        let param = {
-            date: document.querySelector("input[name=title-date]").value
-        };
-        let url = "/storeInfo/" + param.date;
+        func.get.storeInfo();
+    });
 
-        func.get.storeInfo(url, param);
+    $(document).on("click", ".store-vote-wrap span", function (){
+        this.parentNode.nextElementSibling.nextElementSibling.classList.toggle("on");
     });
 
 

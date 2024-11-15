@@ -87,7 +87,40 @@ export let func = {
                         <div class="store-addr">
                             <span>${store.formatted_address}</span>
                         </div>
-
+                        <div class="store-vote-wrap">
+                            <span>홍길동 외 1명</span>
+                        </div>
+                `;
+                    if (store?.current_opening_hours?.open_now){
+                        html += `
+                        <div class="store-status on">
+                            <span>운영중</span>
+                        </div>
+                        `
+                    }else{
+                        html += `
+                        <div class="store-status">
+                            <span>마감</span>
+                        </div>
+                        `
+                    }
+                    html += `
+                        <div class="store-vote-list">
+                            <ul>
+                                <li>홍길동</li>
+                                <li>홍길순</li>
+                                <li>홍길자</li>
+                                <li>홍길자</li>
+                                <li>홍길자</li>
+                                <li>홍길자</li>
+                                <li>홍길자</li>
+                                <li>홍길자</li>
+                                <li>홍길자</li>
+                                <li>홍길자</li>
+                                <li>홍길민</li>
+                                <li>홍홍홍</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>`;
             }

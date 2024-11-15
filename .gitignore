@@ -11,3 +11,5 @@ out/
 .settings/
 .vscode/
 bin/
+
+application.properties

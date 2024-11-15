@@ -4,8 +4,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Nearby Restaurants</title>
+    <title>그린 근처 식당..</title>
     <style>
+    /*임시 스타일!!!!!!!!*/
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
@@ -16,7 +17,7 @@
         #restaurantList {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* 각 카드의 최소 너비는 250px */
-            gap: 20px; /* 카드 사이의 간격 */
+            gap: 20px; 
             padding: 20px;
         }
         .restaurant {

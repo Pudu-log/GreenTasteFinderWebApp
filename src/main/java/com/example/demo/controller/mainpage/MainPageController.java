@@ -17,7 +17,6 @@ import com.example.demo.service.MainPageService;
 
 
 @Controller
-@RequestMapping("/mainpage")
 public class MainPageController {
     private final MainPageService mainPageService;
 
@@ -26,7 +25,7 @@ public class MainPageController {
         this.mainPageService = mainPageService;
     }
 
-    @GetMapping
+    @RequestMapping("/")
     public String getRestaurants(Model model) {
     	
         // 고정된 좌표 설정

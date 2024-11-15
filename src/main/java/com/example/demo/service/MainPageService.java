@@ -62,7 +62,8 @@ public class MainPageService {
             // 거리 기준으로 오름차순 정렬
            restaurants.sort(Comparator.comparingDouble(Restaurant::getDistance));
             // 별점 기준으로 내림차순 정렬 (높은 순으로 정렬)
-           // restaurants.sort(Comparator.comparingDouble(Restaurant::getRating).reversed());
+           //restaurants.sort(Comparator.comparingDouble(Restaurant::getRating).reversed());
+           
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -100,8 +101,6 @@ public class MainPageService {
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         return EARTH_RADIUS * c; // 거리 반환 (단위: km)
     }
-    
-    
     
 }
 

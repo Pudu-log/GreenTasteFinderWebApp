@@ -43,23 +43,20 @@
 </head>
 <body>
     <h1>green bobbb</h1>
-	<div id="restaurantList">
-	    <c:forEach var="restaurant" items="${restaurants}">
-	        <div class="restaurant">
-	            <!-- 상세 페이지로 이동하는 링크 추가 -->
-	            <a href="/restaurant/detail/${restaurant.id}">
-	                <h3>${restaurant.name}</h3>
-	            </a>
-	            <p><strong>Address:</strong> ${restaurant.address}</p>
-	            <p><strong>Rating:</strong> ${restaurant.rating}</p>
-	            <p><strong>Distance:</strong> ${restaurant.distance} km</p>
-	            
-	            <c:if test="${not empty restaurant.photoUrl}">
-	                <img src="${restaurant.photoUrl}" alt="${restaurant.name} Photo" />
-	            </c:if>
-	        </div>
-	    </c:forEach>
-	</div>
-
+    <div id="restaurantList">
+        <!-- 거리 기준으로 정렬된 음식점 리스트 -->
+        <c:forEach var="restaurant" items="${restaurants}">
+            <div class="restaurant">
+                <h3>${restaurant.name}</h3>
+                <p><strong>Address:</strong> ${restaurant.address}</p>
+                <p><strong>Rating:</strong> ${restaurant.rating}</p>
+                <p><strong>Distance:</strong> ${restaurant.distance} km</p>
+                
+                <c:if test="${not empty restaurant.photoUrl}">
+                    <img src="${restaurant.photoUrl}" alt="${restaurant.name} Photo" />
+                </c:if>
+            </div>
+        </c:forEach>
+    </div>
 </body>
 </html>

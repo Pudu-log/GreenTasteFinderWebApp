@@ -34,6 +34,49 @@
 
             <div class="store-content">
 
+                <div class="store-box">
+                    <div class="store-img border-tl-10">
+                        <img class="border-tl-10" src="${img}">
+                    </div>
+                    <div class="store-wrap">
+                        <div class="store-title border-tr-10">
+                            <span class="border-tr-10">${store.name}</span>
+                        </div>
+                        <div class="store-gbn">
+                            <span>${store.types[0]}</span>
+                        </div>
+                        <div class="store-distance">
+                            <span>${distance}M</span>
+                        </div>
+                    </div>
+                    <div class="store-2wrap">
+                        <div class="store-addr">
+                            <span>${store.formatted_address}</span>
+                        </div>
+                        <div class="store-vote-wrap">
+                            <span>홍길동 외 1명</span>
+                        </div>
+                        <div class="store-status">
+                            <span>운영중</span>
+                        </div>
+                        <div class="store-vote-list">
+                            <ul>
+                                <li>홍길동</li>
+                                <li>홍길순</li>
+                                <li>홍길자</li>
+                                <li>홍길민</li>
+                                <li>홍길민</li>
+                                <li>홍길민</li>
+                                <li>홍길민</li>
+                                <li>홍길민</li>
+                                <li>홍길민</li>
+                                <li>홍길민</li>
+                                <li>홍길민</li>
+                                <li>홍홍홍</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 

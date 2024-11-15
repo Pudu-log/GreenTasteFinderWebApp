@@ -14,11 +14,13 @@ import java.util.List;
 @Controller
 public class VoteStoreController {
 
-    @Autowired
-    VoteStoreService voteStoreService;
+    private final VoteStoreService voteStoreService;
+    private final GooglePlaceApi googlePlaceApi;
 
-    @Autowired
-    GooglePlaceApi googlePlaceApi;
+    public VoteStoreController(VoteStoreService voteStoreService, GooglePlaceApi googlePlaceApi) {
+        this.voteStoreService = voteStoreService;
+        this.googlePlaceApi = googlePlaceApi;
+    }
 
     @RequestMapping("/voteStore")
     public String voteSotre() {

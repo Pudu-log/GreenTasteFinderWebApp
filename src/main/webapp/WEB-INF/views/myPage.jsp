@@ -1,6 +1,6 @@
 <%--
   Created by IntelliJ IDEA.
-  User: GGG
+  User: 황승현
   Date: 2024-11-15
   Time: 오전 11:50
   To change this template use File | Settings | File Templates.
@@ -12,37 +12,8 @@
 <head>
     <meta charset="utf-8">
     <title>마이페이지</title>
-    <style>
-        .top {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 11vh;
-        }
 
-        .bottom {
-            display: flex;
-            height: 37vh;
-            width: 80%;
-            justify-content: space-around;
-            align-items: center;
-            margin: 0 auto;
-        }
-
-        .my-img {
-            width: 30%;
-        }
-
-        .my-menus > a {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-decoration-line: none;
-        }
-        .my-menus > a > p {
-            color: black;
-        }
-    </style>
+    <link rel="stylesheet" href="/static/css/myPage.css"/>
 </head>
 <body>
 <jsp:include page="layout/header.jsp"/>

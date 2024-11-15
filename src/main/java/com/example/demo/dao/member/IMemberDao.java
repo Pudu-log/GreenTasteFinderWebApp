@@ -17,4 +17,7 @@ public interface IMemberDao {
 
     List<SelectBoxDto> selectBox();
 
+    int update(@Param("member") MemberDto memberDto);
+
+    MemberDto getMemberById(@Param("id") String id);
 }

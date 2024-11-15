@@ -13,7 +13,7 @@
     <meta charset="utf-8">
     <title>마이페이지</title>
 
-    <link rel="stylesheet" href="/static/css/myPage.css"/>
+    <link rel="stylesheet" href="/static/css/myPage/myPage.css"/>
 </head>
 <body>
 <jsp:include page="layout/header.jsp"/>
@@ -26,7 +26,7 @@
 
     <div class="bottom">
         <div class="my-menus">
-            <a href="myPage-userInfo">
+            <a href="myPage-userInfo?id=yiok79">
                 <img class="my-img" src="static/images/user-info.png">
                 <p>내 정보</p>
             </a>

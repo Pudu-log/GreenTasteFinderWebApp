@@ -1,18 +1,28 @@
-package com.example.demo.controller;
+package com.example.demo.controller.myPage;
 
+import com.example.demo.service.MyPageService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class MyPageController {
 
+    @Autowired
+    MyPageService myPageService;
+
     @RequestMapping("/myPage")
+
     public String myPage() {
         return "myPage";
     }
 
     @RequestMapping("/myPage-userInfo")
-    public String myPageUserInfo() {
+    public String myPageUserInfo(@RequestParam("id") String id, Model model) {
+        model.addAttribute("member", myPageService.getMemberById(id));
         return "myPage_userInfo";
     }
 
@@ -30,4 +40,5 @@ public class MyPageController {
     public String myPageGood() {
         return "myPage_good";
     }
+
 }

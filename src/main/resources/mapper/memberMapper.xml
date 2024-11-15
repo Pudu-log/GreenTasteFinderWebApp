@@ -19,4 +19,11 @@
     <select id="login" resultType="com.example.demo.dto.MemberDto">
         SELECT id,name,room_code as roomCode, admin_yn as adminYn FROM tbl_user WHERE id = #{id} and pw = #{pw}
     </select>
+    <update id="update" parameterType="com.example.demo.dto.MemberDto">
+        UPDATE tbl_user SET name = #{member.name}, room_code = #{roomCode}, birth = #{member.birth}, email = #{member.email}
+        WHERE id = #{member.id}
+    </update>
+    <select id="getMemberById" resultType="com.example.demo.dto.MemberDto">
+        SELECT *, room_code as roomCode FROM tbl_user WHERE id = #{id}
+    </select>
 </mapper>

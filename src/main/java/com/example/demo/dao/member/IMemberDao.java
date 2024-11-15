@@ -19,5 +19,12 @@ public interface IMemberDao {
 
     int update(@Param("member") MemberDto memberDto);
 
+    int deleteMember(String id);
+
     MemberDto getMemberById(@Param("id") String id);
+
+    List<MemberDto> memberList();
+
+
+
 }

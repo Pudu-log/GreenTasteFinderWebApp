@@ -49,7 +49,7 @@ body {
 
 /* 콘텐츠 스타일 */
 .content {
-    min-height: 66.6vh;
+    min-height: 79vh;
     padding: 20px;
     background-color: #eaeaea;
 }

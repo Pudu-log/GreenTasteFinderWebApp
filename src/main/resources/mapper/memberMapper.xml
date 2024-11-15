@@ -23,7 +23,14 @@
         UPDATE tbl_user SET name = #{member.name}, room_code = #{roomCode}, birth = #{member.birth}, email = #{member.email}
         WHERE id = #{member.id}
     </update>
+    <delete id="deleteMember" >
+        DELETE FROM tbl_user WHERE id = #{id}
+    </delete>
     <select id="getMemberById" resultType="com.example.demo.dto.MemberDto">
         SELECT *, room_code as roomCode FROM tbl_user WHERE id = #{id}
+    </select>
+
+    <select id="memberList" resultType="com.example.demo.dto.MemberDto">
+        SELECT *, room_code as roomCode ,admin_yn as adminYn,insert_dt insertDt FROM tbl_user
     </select>
 </mapper>

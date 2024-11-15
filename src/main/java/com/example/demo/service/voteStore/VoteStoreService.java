@@ -17,8 +17,11 @@ import java.util.List;
 @Service
 public class VoteStoreService {
 
-    @Autowired
-    IVoteStoreDao voteStoreDao;
+    private final IVoteStoreDao voteStoreDao;
+
+    public VoteStoreService(IVoteStoreDao voteStoreDao) {
+        this.voteStoreDao = voteStoreDao;
+    }
 
     public List<VoteStoreDto> getList(){
         return voteStoreDao.getList();

@@ -51,7 +51,6 @@ public class MemberApiController {
         }
     }
 
-
     @GetMapping("/login/select-box")
     public ResponseEntity<ApiResponse<List<RoomDto>>> selectBox() {
         List<RoomDto> selectBoxList = memberService.getSelectBox();

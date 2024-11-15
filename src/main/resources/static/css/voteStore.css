@@ -24,6 +24,7 @@
 }
 
 .store-box{
+    border: 1px solid black;
     border-radius: 10px;
     display: flex;
     flex-direction: row;
@@ -31,7 +32,6 @@
     margin: 7px;
     width: 400px;
     height: 400px;
-    background-color: rebeccapurple;
 }
 
 .store-img{
@@ -54,7 +54,6 @@
     align-items: center;
     width: 100%;
     height: 50%;
-    background-color: red;
 }
 
 .store-gbn{
@@ -63,7 +62,6 @@
     align-items: center;
     width: 100%;
     height: 50%;
-    background-color: brown;
 }
 
 .store-distance{
@@ -72,12 +70,11 @@
     align-items: center;
     width: 100%;
     height: 20%;
-    background-color: #333333;
 }
 
 .store-2wrap{
     width: 100%;
-    height: 50%;
+    height: 40%;
     display: flex;
     flex-direction: column;
 }
@@ -87,8 +84,60 @@
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: 30%;
-    background-color: aqua;
+    height: 45%;
+}
+.store-vote-wrap{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 35%;
+}
+
+.store-status{
+    background-color: rgba(255, 51, 51, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 20%;
+}
+
+.store-status.on{
+    background-color: rgba(173, 255, 50, 0.6);
+}
+
+.store-vote-list.on{
+    display: flex;
+}
+
+.store-vote-list{
+    border-radius: 10px;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border: 1px solid black;
+    position: absolute;
+    width: 100px;
+    height: 150px;
+    margin-left: 200px;
+    overflow-y: scroll;
+    -ms-overflow-style: none;
+}
+
+.store-vote-list::-webkit-scrollbar{
+    display:none;
+}
+
+ul{
+    width: 80%;
+    height: 80%;
+}
+
+li{
+    text-align: center;
+    list-style: none;
 }
 
 img{

@@ -6,30 +6,43 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
+
 <div id="googleMap" style="width: 100%;height: 700px;"></div>
+
+<div class="container">
+
+    <ul class="tabs">
+        <li class="tab-link current" data-tab="tab-1">Tab One</li>
+        <li class="tab-link" data-tab="tab-2">Tab Two</li>
+        <li class="tab-link" data-tab="tab-3">Tab Three</li>
+        <li class="tab-link" data-tab="tab-4">Tab Four</li>
+    </ul>
+
+    <div id="tab-1" class="tab-content current">
+
+    </div>
+    <div id="tab-2" class="tab-content">
+
+    </div>
+    <div id="tab-3" class="tab-content">
+
+    </div>
+    <div id="tab-4" class="tab-content">
+
+    </div>
+
+</div>
+
+<div id="name">${response.result}</div>
 
 <script>
     let map;
-    let inputData = null;
-
-    // 주소 검색 함수 호출 (페이지 로드 후 실행)
-    searchAddressHandler();
-
-    // searchAddressHandler 함수 호출 후 initMap을 호출
-    async function searchAddressHandler() {
-        try {
-            // 주소 검색 API 호출
-            const response = await axios.get(`/getPlaceDetails?placeId=ChIJ70lL5f4iZDURou4DxhPonPA`);
-            console.log(response.data);
-            inputData = response.data;  // inputData에 값 할당
-            initMap(inputData);  // searchAddressHandler 함수 안에서 initMap 호출
-        } catch (error) {
-            console.log(error);
-        }
-    }
 
     // 지도 초기화 함수
-    async function initMap(inputData) {
+    async function initMap() {
+        let inputData = ${response}
+        console.log(inputData);
+
         if (!inputData) {
             console.error("입력 데이터가 없습니다.");
             return;
@@ -63,7 +76,7 @@
 </script>
 
 <!-- 구글맵 API 호출 -->
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDv0yF-dMGzUxSlJojgLQyWZ4xudsAUX2g" async defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDv0yF-dMGzUxSlJojgLQyWZ4xudsAUX2g&callback=initMap" async defer></script>
 
 </body>
 </html>

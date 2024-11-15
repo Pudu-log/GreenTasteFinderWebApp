@@ -1,48 +1,69 @@
-<html>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <title>Add a Map with Markers using HTML</title>
+    <title>Add a Map with Markers using HTML</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
 <div id="googleMap" style="width: 100%;height: 700px;"></div>
 
 <script>
-  let map;
-  //apikey 싱글톤으로 빼는게 낫나?
-  const apiKey = "AIzaSyDv0yF-dMGzUxSlJojgLQyWZ4xudsAUX2g";
+    let map;
+    let inputData = null;
 
-  async function initMap() {
-    //위치 선언
-    const position = { lat: -25.344, lng: 131.031 };
-    // Request needed libraries.
-    //@ts-ignore
-    const { Map } = await google.maps.importLibrary("maps");
-    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+    // 주소 검색 함수 호출 (페이지 로드 후 실행)
+    searchAddressHandler();
 
-    // The map, centered at Uluru
-    map = new Map(document.getElementById("googleMap"), {
-      zoom: 4,
-      center: position,
-      mapId: "MAP_ID",
-    });
+    // searchAddressHandler 함수 호출 후 initMap을 호출
+    async function searchAddressHandler() {
+        try {
+            // 주소 검색 API 호출
+            const response = await axios.get(`/getPlaceDetails?placeId=ChIJ70lL5f4iZDURou4DxhPonPA`);
+            console.log(response.data);
+            inputData = response.data;  // inputData에 값 할당
+            initMap(inputData);  // searchAddressHandler 함수 안에서 initMap 호출
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
-    // The marker, positioned at Uluru
-    const marker = new AdvancedMarkerElement({
-      map: map,
-      position: position,
-      title: "이름 적기",
-    });
-  }
+    // 지도 초기화 함수
+    async function initMap(inputData) {
+        if (!inputData) {
+            console.error("입력 데이터가 없습니다.");
+            return;
+        }
 
-  const xhr = new XMLHttpRequest();
-  const url = "https://maps.googleapis.com/maps/api/place/details/json?place_id=ChIJ70lL5f4iZDURou4DxhPonPA&fields=formatted_address%2Cname%2Crating%2Cgeometry&key=AIzaSyDv0yF-dMGzUxSlJojgLQyWZ4xudsAUX2g";
-  xhr.onload = function () {
-    console.log(this.response);
-  }
-  xhr.open("GET", url);
-  xhr.send();
+        // 위치 선언: inputData에서 경도와 위도 가져오기
+        const position = {
+            lat: inputData.result.geometry.location.lat,
+            lng: inputData.result.geometry.location.lng
+        };
 
+        // Request needed libraries.
+        //@ts-ignore
+        const {Map} = await google.maps.importLibrary("maps");
+        const {AdvancedMarkerElement} = await google.maps.importLibrary("marker");
+
+        // 지도 생성
+        map = new Map(document.getElementById("googleMap"), {
+            zoom: 14, // 지도 확대
+            center: position, // 검색된 위치로 지도 중심 설정
+            mapId: "MAP_ID", // 지도 스타일 ID
+        });
+
+        // 마커 생성
+        const marker = new AdvancedMarkerElement({
+            map: map,
+            position: position,
+            title: inputData.result.name, // 장소 이름
+        });
+    }
 </script>
-<%--구글맵 api 호출 및 initmap 작동--%>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDv0yF-dMGzUxSlJojgLQyWZ4xudsAUX2g&callback=initMap"></script>
+
+<!-- 구글맵 API 호출 -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDv0yF-dMGzUxSlJojgLQyWZ4xudsAUX2g" async defer></script>
+
 </body>
 </html>

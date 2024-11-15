@@ -2,6 +2,7 @@ package com.example.demo.dto;
 
 import lombok.Data;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -13,7 +14,7 @@ public class MemberDto {
     private Integer roomCode;
     private String email;
     private Date birth;
-    private LocalDateTime insertDt;
-    private LocalDateTime updateDt;
+    private Timestamp insertDt;
+    private Timestamp  updateDt;
     private String adminYn;
 }

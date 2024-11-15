@@ -28,7 +28,7 @@ document.forms["loginForm"].addEventListener("submit", function (event) {
         pw: form["pw"].value,
     };
 
-    axios.post('/api/login', formData)
+    axios.post('/api/members/login', formData)
         .then(response => {
             if (response.data.data === '로그인 성공') {
                 alert("로그인 성공")

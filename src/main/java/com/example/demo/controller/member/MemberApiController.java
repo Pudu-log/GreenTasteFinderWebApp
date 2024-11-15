@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/members")
 public class MemberApiController {
 
     private final MemberService memberService;
@@ -52,13 +52,13 @@ public class MemberApiController {
     }
 
 
-    @GetMapping("/login/selectBox")
+    @GetMapping("/login/select-box")
     public ResponseEntity<ApiResponse<List<SelectBoxDto>>> selectBox() {
         List<SelectBoxDto> selectBoxList = memberService.getSelectBox();
         return ResponseEntity.ok(new ApiResponse<>(ResponseStatus.SUCCESS, selectBoxList));
     }
 
-    @GetMapping("/login/idCheck")
+    @GetMapping("/login/id-check")
     public ResponseEntity<ApiResponse<String>> idCheck(@RequestParam("id") String id) {
         int result = memberService.idCheck(id);
         if (result > 0) {

@@ -1,7 +1,7 @@
 let isDuplicateChecked = false;
 
 document.addEventListener("DOMContentLoaded", function () {
-    axios.get('/api/login/selectBox')
+    axios.get('/api/members/login/select-box')
         .then(response => {
             const rooms = response.data.data;
             console.log(response);
@@ -92,7 +92,7 @@ function idCheck() {
         return;
     }
 
-    axios.get('/api/login/idCheck?id=' + idValue)
+    axios.get('/api/members/login/id-check?id=' + idValue)
         .then(response => {
             if (response.data.data === '아이디 사용가능') {
                 isDuplicateChecked = true;
@@ -123,7 +123,7 @@ document.forms["signupForm"].addEventListener("submit", function (event) {
         birth: form["birth"].value
     };
 
-    axios.post('/api/join', formData)
+    axios.post('/api/members/join', formData)
         .then(() => {
             location.href = "/login";
         })

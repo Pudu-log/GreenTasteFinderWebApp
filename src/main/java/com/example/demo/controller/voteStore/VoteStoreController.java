@@ -76,7 +76,7 @@ public class VoteStoreController {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         LocalDateTime compare = LocalDateTime.parse(comparisonDateTime, formatter);
 
-//        if (now.toLocalTime().isBefore(LocalTime.from(compare))) {
+        if (now.toLocalTime().isBefore(LocalTime.from(compare))) {
 
             HttpSession session = request.getSession(false);
             MemberDto login = (MemberDto) session.getAttribute("member");
@@ -100,9 +100,9 @@ public class VoteStoreController {
                     System.out.println(result);
                 }
             }
-//        } else {
-//            result = -2;
-//        }
+        } else {
+            result = -2;
+        }
 
         return result;
     }

@@ -17,10 +17,6 @@
         <div class="content">
             <div id="user-management" class="tab-content">
                 <h2>사용자 관리</h2>
-                <div class="search-container">
-                    <input type="text" id="searchInput" placeholder="검색 (아이디, 이름, 강의실)">
-                    <button onclick="searchUsers()">검색</button>
-                </div>
                 <table class="user-table">
                     <thead>
                         <tr>
@@ -38,7 +34,10 @@
                     </tbody>
                 </table>
                 <div id="paging-buttons" class="paging-buttons"></div>
-
+                <div class="search-container">
+                    <input type="text" id="searchInput" placeholder="검색 (아이디, 이름, 강의실)">
+                    <button onclick="searchUsers()">검색</button>
+                </div>
             </div>
             <!-- 강의실 관리 -->
             <div id="lecture-management" class="tab-content" style="display: none;">

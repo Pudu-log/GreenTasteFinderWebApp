@@ -13,7 +13,7 @@ public class DetailPageController {
 
     @GetMapping("/test")
     public String test(/*@PathVariable("placeId") String placeId */ Model model) {
-        String placeId = "ChIJ70lL5f4iZDURou4DxhPonPA";
+        String placeId = "ChIJX0sLfm7raDURBSWF14n0VD0";
         String url = "https://maps.googleapis.com/maps/api/place/details/json?place_id=" + placeId +
                 "&language=ko&fields=formatted_address,name,rating,geometry,photo,reviews,opening_hours&key=" + GOOGLE_API_KEY;
 

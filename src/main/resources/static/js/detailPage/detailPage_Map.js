@@ -3,30 +3,32 @@ console.log(inputData);
 
 //제목 텍스트 수정
 $('#title').text(inputData.name);
-$('#open_now').text((inputData.opening_hours.open_now)?"운영중":"운영 중지");
+if("open_hours" in inputData){
+    $('#open_now').text((inputData.opening_hours.open_now)?"운영중":"운영 중지");
+}
+
 $('#rating').text("평점 " + inputData.rating);
 $('#reviewLength').text("리뷰 " + inputData.reviews.length);
 
+if("open_hours" in inputData) {
+    let weekDays = inputData.opening_hours.weekday_text;
+    weekDays.forEach((day) => {
+        $('#tab-1').append(day + '<br>');
+    });
+}
 
-let weekDays = inputData.opening_hours.weekday_text;
-$('#tab-1').text("")
-weekDays.forEach((day) => {
-    $('#tab-1').append(day + '<br>');
-});
-
-$('#tab-2').text("")
 inputData.photos.forEach((photo) => {
     $('#tab-2').append("<img src=\"https://maps.googleapis.com/maps/api/place/photo?photoreference=" + photo.photo_reference + "&key=AIzaSyDv0yF-dMGzUxSlJojgLQyWZ4xudsAUX2g&maxheight=400&maxwidth=400\" alt=\"없음\">");
 });
 
-$('#tab-3').text("")
+let reviewIndex = 0;
 inputData.reviews.forEach((review) => {
-    let author= review.author_name.replace(/\s+/g, "");
-    $('#tab-3').append("<div class=\"tab-item\" id = \"" + author + "\"></div>")
-    $('#' + author).append("<p>" + review.author_name + "</p>" +
+    $('#tab-3').append("<div class=\"tab-item\" id = \"reviewer"+ reviewIndex +"\"></div>")
+    $('#reviewer' + reviewIndex).append("<p>" + review.author_name + "</p>" +
         "<p>" + review.relative_time_description + "</p>" +
         "<p>평점 " + review.rating + "/5</p>" +
         "<p>" + review.text + "</p>");
+    reviewIndex++;
 })
 
 

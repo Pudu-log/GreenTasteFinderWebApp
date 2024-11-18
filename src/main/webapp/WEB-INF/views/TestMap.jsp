@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="/static/css/detail.css"/>
 </head>
 <body>
+<%
+    session.setAttribute("id","aaa50");
+%>
 <jsp:include page="layout/header.jsp"/>
 <jsp:include page="layout/nav.jsp"/>
 
@@ -16,9 +19,9 @@
 <div class="title-container">
     <h2 id="title">제목</h2>
     <ul>
-        <li id="open_now">open_now</li>
-        <li id="rating">rating</li>
-        <li id="reviewLength">review.length</li>
+        <li id="open_now">오픈여부 미확인</li>
+        <li id="rating">별점 없음</li>
+        <li id="reviewLength">리뷰 없음</li>
     </ul>
 </div>
 
@@ -42,38 +45,31 @@
         <li class="tab-link" data-tab="tab-3">리뷰</li>
     </ul>
 
-    <div id="tab-1" class="tab-content current">
-        weekday_text
-    </div>
-    <div id="tab-2" class="tab-content">
-        photo
-    </div>
-    <div id="tab-3" class="tab-content">
-        reviews
-    </div>
+    <div id="tab-1" class="tab-content current"></div>
+    <div id="tab-2" class="tab-content"></div>
+    <div id="tab-3" class="tab-content"></div>
 </div>
 
 
 <script type="text/javascript">
-    let inputData =
-    ${response}.result;
+    let inputData = ${response}.result;
+    let placeId = "${placeId}";
 </script>
 <script>
-    //좋아요 전 인원 조회하고
-    axios.post('/api/admin/room-list')
+    axios.get('api/detailpage/likeAllSelect?store_id=' + placeId +'&gubn=G')
         .then((response) => {
-            console.log(response);
-            console.log(response.data);
+            $('#like-count').text(response.data);
         })
         .catch((error) => {
             console.log(error);
         })
 
-    $('#like-count').text();
+
+    //본인 좋아요 조회
     //북마크 조회하고
+    //위 세가지 조건이 true일시 버튼 색변화, 삭제로 기능 변경
     //방문여부 조회
 
-    //좋아요 추가하기(재클릭 -> 삭제)
     //추가하고 좋아요 수 갱신
     $('#like-button').click(function () {
 

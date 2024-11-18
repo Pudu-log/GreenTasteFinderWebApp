@@ -192,11 +192,22 @@ export let func = {
         chage: () => {
             const eles = document.querySelectorAll("*");
 
-            for (let ele of eles){
-                setInterval(function (){
+            for (let ele of eles) {
+                setInterval(function () {
                     ele.style.color = func.set.changeColor();
                 }, 100);
             }
+        },
+
+        dateFormat: (date) => {
+            const today = new Date(date);
+
+            // 연도, 월, 일 추출
+            const year = today.getFullYear(); // 연도 (4자리)
+            const month = String(today.getMonth() + 1).padStart(2, '0'); // 월 (0부터 시작하므로 +1 필요, 2자리)
+            const day = String(today.getDate()).padStart(2, '0'); // 일 (2자리)
+
+            return `${year}-${month}-${day}`; // yyyy-MM-dd 형식으로 반환
         }
     }
 

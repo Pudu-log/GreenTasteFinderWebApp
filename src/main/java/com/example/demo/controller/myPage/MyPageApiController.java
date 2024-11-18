@@ -20,19 +20,11 @@ public class MyPageApiController {
         this.googlePlaceApi = googlePlaceApi;
     }
 
-    @GetMapping("/getFavorList")
-    public List<JsonNode> getFavorList(@RequestParam("val") String val, @RequestParam("id") String id) {
-        List<String> myPage = myPageService.getActStoreList(val, id);
-        googlePlaceApi.init(myPage);
-//        System.out.println(googlePlaceApi.getData());
-        return googlePlaceApi.getData();
-    }
-
     @GetMapping("/getActStoreList")
     public List<JsonNode> getActStoreList(@RequestParam("gubn") String gubn, @RequestParam("id") String id) {
         List<String> myPage = myPageService.getActStoreList(gubn, id);
         googlePlaceApi.init(myPage);
-//        System.out.println(googlePlaceApi.getData());
+
         return googlePlaceApi.getData();
     }
 }

@@ -3,12 +3,6 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.demo.dao.myPage.IMyPageActDao">
-    <select id="getGoodStoreList">
-        SELECT store_id FROM tbl_act WHERE gubn = 'G' AND id = #{id}
-    </select>
-    <select id="getFavorStoreList">
-        SELECT store_id FROM tbl_act WHERE gubn = 'B' AND id = #{id}
-    </select>
     <select id="getActStoreList">
         SELECT store_id FROM tbl_act WHERE gubn = #{gubn} AND id = #{id}
     </select>

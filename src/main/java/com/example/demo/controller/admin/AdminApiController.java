@@ -26,13 +26,16 @@ public class AdminApiController {
     private final MemberService memberService;
 
     @GetMapping("/member-list")
-    public ResponseEntity<ApiResponse<Map<String, Object>>> getMemberList(@RequestParam(defaultValue = "1") int page) {
-        int totalCount = memberService.getCount();
+    public ResponseEntity<ApiResponse<Map<String, Object>>> getMemberList(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam String keyword) {
+
+        keyword = (keyword == null || keyword.trim().isEmpty()) ? null : keyword;
+
+        int totalCount = memberService.getCount(keyword);
         PagingBtn pagingBtn = new PagingBtn(totalCount, page);
 
-        System.out.println(page+"Aaa");
-
-        List<MemberDto> resultList = adminService.memberList(page);
+        List<MemberDto> resultList = adminService.memberList(page, keyword);
 
         Map<String, Object> response = new HashMap<>();
         response.put("members", resultList);
@@ -41,7 +44,7 @@ public class AdminApiController {
         return ResponseEntity.ok(new ApiResponse<>(ResponseStatus.SUCCESS, response));
     }
 
-    @DeleteMapping("/delete{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<ApiResponse<String>> deleteMember(@PathVariable String id) {
         int result = adminService.deleteMember(id);
         if (result > 0) {

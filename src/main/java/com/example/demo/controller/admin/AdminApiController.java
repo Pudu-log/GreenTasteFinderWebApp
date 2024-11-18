@@ -30,8 +30,6 @@ public class AdminApiController {
         int totalCount = memberService.getCount();
         PagingBtn pagingBtn = new PagingBtn(totalCount, page);
 
-        System.out.println(page+"Aaa");
-
         List<MemberDto> resultList = adminService.memberList(page);
 
         Map<String, Object> response = new HashMap<>();

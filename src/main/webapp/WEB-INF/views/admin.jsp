@@ -3,12 +3,12 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>어드민 페이지</title>
+        <title>관리자 페이지</title>
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> <!-- Axios 추가 -->
         <link rel="stylesheet" href="/static/css/admin.css">
     </head>
     <body>
-        <div class="admin-header">어드민 페이지</div>
+        <div class="admin-header">관리자 페이지</div>
         <div class="tab-menu">
             <button class="active" data-tab="user-management" onclick="showTab('user-management')">사용자 관리</button>
             <button data-tab="lecture-management" onclick="showTab('lecture-management')">강의실 관리</button>

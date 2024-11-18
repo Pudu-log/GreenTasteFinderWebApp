@@ -19,7 +19,7 @@ function getMemberList(page = 1) {
 
 /**
  * 사용자 목록 테이블 업데이트
- * @param {string} tableBodySelector - 테이블 tbody 선택자
+ * @param {string} tableBodySelector - 테이블 tbody
  * @param {Array} data - 사용자 데이터 배열
  * @param {Function} rowGenerator - 행 생성 함수
  */
@@ -31,8 +31,8 @@ function updateTable(tableBodySelector, data, rowGenerator) {
 
 /**
  * 사용자 목록 생성
- * @param {Object} member - 사용자 데이터 객체
- * @returns {HTMLTableRowElement} 생성된 테이블 행 요소
+ * @param {Object} member - 사용자 데이터
+ * @returns {HTMLTableRowElement} 생성된 테이블 행
  */
 function createMemberRow(member) {
     const row = document.createElement('tr');
@@ -56,8 +56,7 @@ function createMemberRow(member) {
 
 /**
  * 페이징 버튼 생성 및 업데이트
- * @param {Object} pagingBtn - 페이징 버튼 데이터 객체
- * @param {Function} onPageClick - 페이지 이동 함수
+ * @param {Object} pagingBtn - 페이징 버튼 데이터
  */
 function updatePagingButtons(pagingBtn, onPageClick) {
     const pagingContainer = document.querySelector('#paging-buttons');
@@ -99,9 +98,8 @@ function updatePagingButtons(pagingBtn, onPageClick) {
 /**
  * 페이징 버튼 생성
  * @param {string|number} text - 버튼 텍스트
- * @param {Function} onClick - 클릭 이벤트 핸들러
  * @param {boolean} [isActive=false] - 활성화 여부
- * @returns {HTMLButtonElement} 생성된 버튼 요소
+ * @returns {HTMLButtonElement} 생성된 버튼
  */
 function createPagingButton(text, onClick, isActive = false) {
     const button = document.createElement('button');

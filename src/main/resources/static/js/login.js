@@ -38,10 +38,8 @@ document.forms["loginForm"].addEventListener("submit", function (event) {
     axios.post('/api/members/login', formData)
         .then(response => {
             if (response.data.data === '/admin') {
-                alert("로그인 성공");
                 location.href = "/admin";
             } else if (response.data.data === '/') {
-                alert("로그인 성공");
                 location.href = "/";
             } else {
                 alert("로그인 실패");

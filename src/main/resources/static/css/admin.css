@@ -119,3 +119,45 @@ p {
 .paging-buttons button.active:hover {
     transform: none;
 }
+
+.search-container {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+}
+
+.search-container input {
+    width: 300px;
+    padding: 10px;
+    margin-right: 10px;
+    border: 1px solid #5050f0;
+    border-radius: 4px;
+    background-color: #292942;
+    color: #ffffff;
+}
+
+.search-container button {
+    padding: 10px 20px;
+    background-color: #3a3a55;
+    color: #ffffff;
+    border: 1px solid #5050f0;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.search-container button:hover {
+    background-color: #5050f0;
+    color: #e0e0e0;
+    transform: scale(1.1);
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type='number'] {
+    -moz-appearance: textfield;
+}

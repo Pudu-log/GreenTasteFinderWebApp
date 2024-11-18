@@ -5,6 +5,7 @@
 
 <head>
     <link rel="stylesheet" href="/static/css/login.css">
+    <link rel="icon" href="data:,">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 

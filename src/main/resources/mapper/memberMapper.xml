@@ -20,10 +20,11 @@
         SELECT id,name,room_code as roomCode, admin_yn as adminYn FROM tbl_user WHERE id = #{id} and pw = #{pw}
     </select>
     <update id="update" parameterType="com.example.demo.dto.MemberDto">
-        UPDATE tbl_user SET name = #{member.name}, room_code = #{roomCode}, birth = #{member.birth}, email = #{member.email}
+        UPDATE tbl_user SET name = #{member.name}, room_code = #{roomCode}, birth = #{member.birth}, email =
+        #{member.email}
         WHERE id = #{member.id}
     </update>
-    <delete id="deleteMember" >
+    <delete id="deleteMember">
         DELETE FROM tbl_user WHERE id = #{id}
     </delete>
     <select id="getMemberById" resultType="com.example.demo.dto.MemberDto">
@@ -32,5 +33,11 @@
 
     <select id="memberList" resultType="com.example.demo.dto.MemberDto">
         SELECT *, room_code as roomCode ,admin_yn as adminYn,insert_dt insertDt FROM tbl_user
+        ORDER BY insert_dt
+        LIMIT #{offset} ,10 ;
+    </select>
+
+    <select id="getCount" resultType="int">
+        SELECT COUNT(*) FROM tbl_user;
     </select>
 </mapper>

@@ -22,10 +22,7 @@ public class MyPageApiController {
 
     @GetMapping("/getFavorList")
     public List<JsonNode> getFavorList(@RequestParam("val") String val, @RequestParam("id") String id) {
-        System.out.println(val);
-        System.out.println(id);
         List<String> myPage = myPageService.getActStoreList(val, id);
-        System.out.println(myPage);
 
         googlePlaceApi.init(myPage);
         System.out.println(googlePlaceApi.getData());

@@ -9,6 +9,49 @@
     </select>
 
     <select id="getStoreId">
-        SELECT store_id FROM tbl_vote WHERE DATE_FORMAT(vote_dt, '%Y-%m-%d') = #{date} ;
+        SELECT a.store_id
+        FROM tbl_vote a
+        LEFT JOIN tbl_user b ON a.id = b.id
+        WHERE DATE_FORMAT(a.vote_dt, '%Y-%m-%d') = #{date}
+        AND b.room_code = #{room_code}
+        GROUP BY a.store_id
+        ORDER BY COUNT(*) DESC;
     </select>
+
+    <select id="getListOnDate" resultType="com.example.demo.dto.voteStore.VoteStoreDto">
+        SELECT  a.*,
+                b.name
+        FROM tbl_vote a
+        LEFT JOIN tbl_user b ON a.id = b.id
+        WHERE DATE_FORMAT(a.vote_dt, '%Y-%m-%d') = #{date}
+        AND b.room_code = #{room_code}
+    </select>
+
+    <select id="getStatus" resultType="String">
+        SELECT end_yn
+        FROM tbl_vote
+        WHERE id = #{id}
+        AND DATE_FORMAT(vote_dt, '%Y-%m-%d') = #{date}
+    </select>
+
+    <insert id="insertVote">
+        INSERT INTO tbl_vote(
+            store_id,
+            id,
+            vote_dt,
+            end_yn
+        )VALUES(
+            #{vote.store_id},
+            #{vote.id},
+            NOW(),
+            #{vote.end_yn}
+        );
+    </insert>
+
+    <delete id="deleteVote">
+        DELETE FROM tbl_vote
+        WHERE id = #{id}
+        AND DATE_FORMAT(vote_dt, '%Y-%m-%d') = #{date};
+    </delete>
+
 </mapper>

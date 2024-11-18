@@ -5,7 +5,6 @@
   Time: 오후 12:44
   To change this template use File | Settings | File Templates.
 --%>
-<%--TODO : 비밀번호 추가 되야하고 수정 기능 아직 안해놓음 유효성때문에 할 게 많아서 일단 뒤로 미룬 후 다른 거 부터 할 예정 2024.11.15--%>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
@@ -42,17 +41,17 @@
 
             <div class="form-group">
                 <label for="pw">비밀번호</label>
-                <input type="password" name="pw" id="pw" value="member.pw" placeholder="*****" autocomplete="off"
+                <input type="password" name="pw" id="pw" value="${member.pw}" placeholder="*****" autocomplete="off"
                        readonly>
             </div>
             <div class="form-group">
                 <label for="pw"></label>
-                <button id="changePw-btn">비밀번호 변경</button>
+                <button type="button" id="changePw-btn">비밀번호 변경</button>
             </div>
 
             <div class="form-group">
                 <label for="name">이름</label>
-                <input type="text" name="name" id="name" value="${member.name}" autocomplete="off">
+                <input type="text" maxlength="20" name="name" id="name" value="${member.name}" autocomplete="off">
             </div>
 
             <div class="form-group">

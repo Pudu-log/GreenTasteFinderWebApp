@@ -55,7 +55,7 @@
                     addHtml += '<p class="restaurant-phone">📞 ' + res.formatted_phone_number + '</p>';
                     addHtml += '<p class="restaurant-rating">' + reviewMake(res.rating, res.user_ratings_total) + '</p>'
                     addHtml += '<p class="restaurant-distance">거리 : ' + distance(res.geometry.location.lat, res.geometry.location.lng) + 'm</p>'
-                    addHtml += '<a href="' + res.url + '" target="_blank" class="map-link">지도에서 보기</a>'
+                    // addHtml += '<a href="' + res.url + '" target="_blank" class="map-link">지도에서 보기</a>'
                     addHtml += '</div>';
 
                     addHtml += '<div class="restaurant-images">';

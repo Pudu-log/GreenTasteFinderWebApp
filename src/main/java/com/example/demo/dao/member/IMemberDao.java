@@ -23,10 +23,8 @@ public interface IMemberDao {
 
     MemberDto getMemberById(@Param("id") String id);
 
-    List<MemberDto> memberList(@Param("offset") int offset);
+    List<MemberDto> memberList(@Param("offset") int offset,@Param("keyword") String keyword);
 
-    int getCount();
-
-
+    int getCount(String keyword);
 
 }

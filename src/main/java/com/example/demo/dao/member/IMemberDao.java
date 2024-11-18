@@ -23,7 +23,9 @@ public interface IMemberDao {
 
     MemberDto getMemberById(@Param("id") String id);
 
-    List<MemberDto> memberList();
+    List<MemberDto> memberList(@Param("offset") int offset);
+
+    int getCount();
 
 
 

@@ -34,4 +34,7 @@ public class MemberService {
         return memberDao.login(id,password);
     }
 
+    public int getCount(){
+        return memberDao.getCount();
+    }
 }

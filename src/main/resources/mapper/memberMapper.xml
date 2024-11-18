@@ -21,9 +21,17 @@
         FROM tbl_user WHERE id = #{id} and pw = #{pw}
     </select>
 
-    <update id="update" parameterType="MemberDto">
+    <update id="memberUpdate" parameterType="MemberDto">
         UPDATE tbl_user
-        SET name = #{member.name}, room_code = #{roomCode}, birth = #{member.birth}, email = #{member.email}
+
+        SET
+        name = #{member.name},
+        room_code = #{member.roomCode},
+        birth = #{member.birth},
+        email = #{member.email},
+        pw = #{member.pw},
+        update_dt = NOW()
+
         WHERE id = #{member.id}
     </update>
 

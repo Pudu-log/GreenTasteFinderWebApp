@@ -23,7 +23,7 @@
 <jsp:include page="layout/nav.jsp"/>
 <div class="content">
     <div class="form-container">
-        <form class="styled-form" onsubmit="return validateForm()">
+        <form name="update-form" class="styled-form">
             <h4>내 정보</h4>
 
             <div class="form-group">
@@ -37,7 +37,7 @@
 
             <div class="form-group">
                 <label>아이디</label>
-                <input type="text" readonly value="${member.id}">
+                <input type="text" name="id" value="${member.id}" readonly>
             </div>
 
             <div class="form-group">
@@ -92,7 +92,7 @@
                 <label for="confirmPassword">비밀번호 확인</label>
                 <input type="password" id="confirmPassword" name="confirmPassword" required>
             </div>
-            <button type="submit" class="submit-btn">변경</button>
+            <button type="submit" class="submit-btn">확인</button>
         </form>
     </div>
 </div>

@@ -1,5 +1,8 @@
+/**
+ * 로그인 폼 유효성 검사
+ * @returns {boolean} 폼이 유효한 경우 true, 그렇지 않으면 false
+ */
 function validateForm() {
-
     const form = document.forms["loginForm"];
 
     const fields = [
@@ -17,6 +20,10 @@ function validateForm() {
     return true;
 }
 
+/**
+ * 로그인 폼 제출 이벤트 처리
+ * 폼 유효성 검사를 통과한 경우 서버에 데이터를 전송합니다.
+ */
 document.forms["loginForm"].addEventListener("submit", function (event) {
     event.preventDefault();
 
@@ -30,19 +37,26 @@ document.forms["loginForm"].addEventListener("submit", function (event) {
 
     axios.post('/api/members/login', formData)
         .then(response => {
-            if (response.data.data === '로그인 성공') {
-                alert("로그인 성공")
+            if (response.data.data === '/admin') {
+                location.href = "/admin";
+            } else if (response.data.data === '/') {
                 location.href = "/";
             } else {
-                alert("로그인 실패")
+                alert("로그인 실패");
             }
         })
         .catch(error => {
             console.error(error);
-            alert("로그인 실패")
+            alert("로그인 실패");
         });
 });
 
+/**
+ * 에러 메시지 표시 및 입력 필드에 포커스
+ * @param {string} message - 에러 메시지
+ * @param {HTMLElement} input - 포커스할 입력 필드
+ * @returns {boolean} 항상 false 반환
+ */
 function showError(message, input) {
     alert(message);
     input.focus();

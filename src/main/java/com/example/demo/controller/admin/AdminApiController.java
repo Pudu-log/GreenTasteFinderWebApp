@@ -4,31 +4,39 @@ package com.example.demo.controller.admin;
 import com.example.demo.dto.MemberDto;
 import com.example.demo.dto.RoomDto;
 import com.example.demo.service.AdminService;
+import com.example.demo.service.member.MemberService;
 import com.example.demo.type.ResponseStatus;
 import com.example.demo.utils.ApiResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.utils.PagingBtn;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/admin")
+@RequiredArgsConstructor
 public class AdminApiController {
 
-    AdminService adminService;
-
-    @Autowired
-    public AdminApiController(AdminService adminService) {
-        this.adminService = adminService;
-    }
+    private final AdminService adminService;
+    private final MemberService memberService;
 
     @GetMapping("/member-list")
-    public ResponseEntity<ApiResponse<List<MemberDto>>> getMemberList() {
+    public ResponseEntity<ApiResponse<Map<String, Object>>> getMemberList(@RequestParam(defaultValue = "1") int page) {
+        int totalCount = memberService.getCount();
+        PagingBtn pagingBtn = new PagingBtn(totalCount, page);
 
-        List<MemberDto> resultList = adminService.memberList();
-        return ResponseEntity.ok(new ApiResponse<>(ResponseStatus.SUCCESS, resultList));
+        List<MemberDto> resultList = adminService.memberList(page);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("members", resultList);
+        response.put("pagingBtn", pagingBtn);
+
+        return ResponseEntity.ok(new ApiResponse<>(ResponseStatus.SUCCESS, response));
     }
 
     @DeleteMapping("/delete{id}")
@@ -71,5 +79,4 @@ public class AdminApiController {
                     .body(new ApiResponse<>(ResponseStatus.BAD_REQUEST, "추가 실패"));
         }
     }
-
 }

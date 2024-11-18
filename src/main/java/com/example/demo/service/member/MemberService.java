@@ -30,8 +30,9 @@ public class MemberService {
         return memberDao.idCheck(id);
     }
 
-    public MemberDto login(String id, String password){
-        return memberDao.login(id,password);
+    public MemberDto login(String id, String password) {
+        return memberDao.login(id, password);
     }
 
+    public int getCount(String keyword) { return memberDao.getCount(keyword); }
 }

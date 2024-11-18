@@ -17,8 +17,9 @@ public class AdminService {
     private final IAdminDao adminDao;
 
 
-    public List<MemberDto> memberList() {
-        return memberDao.memberList();
+    public List<MemberDto> memberList(int page, String keyword) {
+        int offset = (page - 1) * 10;
+        return memberDao.memberList(offset,keyword);
     }
 
     public int deleteMember(String id) {

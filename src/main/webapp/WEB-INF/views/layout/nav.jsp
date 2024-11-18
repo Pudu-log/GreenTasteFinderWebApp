@@ -10,8 +10,9 @@
 <!-- Nav.jsp -->
 <div class="nav">
     <ul>
-        <li><a href="home.jsp">Home</a></li>
-        <li><a href="about.jsp">About</a></li>
-        <li><a href="contact.jsp">Contact</a></li>
+        <li><a href="/">홈</a></li>
+        <li><a href="/voteStore">밥뽑기</a></li>
+        <li><a href="/여기다잉~">승현아 여기 달면된다 필요한거</a></li>
+        <li><a href="/myPage">마이페이지</a></li>
     </ul>
 </div>

@@ -1,5 +1,6 @@
 <%@ page import="java.util.Date" %>
 <%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="com.example.demo.dto.MemberDto" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
@@ -14,6 +15,12 @@
 <!DOCTYPE html>
 <html lang="en">
     <%
+        MemberDto member = (MemberDto) session.getAttribute("member");
+
+        if (member == null){
+            response.sendRedirect("/login");
+        }
+
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String now = sdf.format(new Date());
     %>
@@ -28,55 +35,55 @@
 
         <div class="content">
             <div class="title-div">
-                <input type="date" name="title-date" value="<%= now%>">
                 <span>메뉴 선정</span>
+                <input type="date" name="title-date" value="<%= now%>">
             </div>
 
             <div class="store-content">
 
-                <div class="store-box">
-                    <div class="store-img border-tl-10">
-                        <img class="border-tl-10" src="${img}">
-                    </div>
-                    <div class="store-wrap">
-                        <div class="store-title border-tr-10">
-                            <span class="border-tr-10">${store.name}</span>
-                        </div>
-                        <div class="store-gbn">
-                            <span>${store.types[0]}</span>
-                        </div>
-                        <div class="store-distance">
-                            <span>${distance}M</span>
-                        </div>
-                    </div>
-                    <div class="store-2wrap">
-                        <div class="store-addr">
-                            <span>${store.formatted_address}</span>
-                        </div>
-                        <div class="store-vote-wrap">
-                            <span>홍길동 외 1명</span>
-                        </div>
-                        <div class="store-status">
-                            <span>운영중</span>
-                        </div>
-                        <div class="store-vote-list">
-                            <ul>
-                                <li>홍길동</li>
-                                <li>홍길순</li>
-                                <li>홍길자</li>
-                                <li>홍길민</li>
-                                <li>홍길민</li>
-                                <li>홍길민</li>
-                                <li>홍길민</li>
-                                <li>홍길민</li>
-                                <li>홍길민</li>
-                                <li>홍길민</li>
-                                <li>홍길민</li>
-                                <li>홍홍홍</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+<%--                <div class="store-box">--%>
+<%--                    <div class="store-img border-tl-10">--%>
+<%--                        <img class="border-tl-10" src="${img}">--%>
+<%--                    </div>--%>
+<%--                    <div class="store-wrap">--%>
+<%--                        <div class="store-title border-tr-10">--%>
+<%--                            <span class="border-tr-10">${store.name}</span>--%>
+<%--                        </div>--%>
+<%--                        <div class="store-gbn">--%>
+<%--                            <span>${store.types[0]}</span>--%>
+<%--                        </div>--%>
+<%--                        <div class="store-distance">--%>
+<%--                            <span>${distance}M</span>--%>
+<%--                        </div>--%>
+<%--                    </div>--%>
+<%--                    <div class="store-2wrap">--%>
+<%--                        <div class="store-addr">--%>
+<%--                            <span>${store.formatted_address}</span>--%>
+<%--                        </div>--%>
+<%--                        <div class="store-vote-wrap">--%>
+<%--                            <span>홍길동 외 1명</span>--%>
+<%--                        </div>--%>
+<%--                        <div class="store-status">--%>
+<%--                            <span>운영중</span>--%>
+<%--                        </div>--%>
+<%--                        <div class="store-vote-list">--%>
+<%--                            <ul>--%>
+<%--                                <li>홍길동</li>--%>
+<%--                                <li>홍길순</li>--%>
+<%--                                <li>홍길자</li>--%>
+<%--                                <li>홍길민</li>--%>
+<%--                                <li>홍길민</li>--%>
+<%--                                <li>홍길민</li>--%>
+<%--                                <li>홍길민</li>--%>
+<%--                                <li>홍길민</li>--%>
+<%--                                <li>홍길민</li>--%>
+<%--                                <li>홍길민</li>--%>
+<%--                                <li>홍길민</li>--%>
+<%--                                <li>홍홍홍</li>--%>
+<%--                            </ul>--%>
+<%--                        </div>--%>
+<%--                    </div>--%>
+<%--                </div>--%>
             </div>
         </div>
 

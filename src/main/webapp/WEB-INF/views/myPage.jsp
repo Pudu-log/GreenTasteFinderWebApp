@@ -26,25 +26,25 @@
 
     <div class="bottom">
         <div class="my-menus">
-            <a href="myPage-userInfo?id=yiok79">
+            <a href="myPage-userInfo">
                 <img class="my-img" src="static/images/user-info.png">
                 <p>내 정보</p>
             </a>
         </div>
         <div class="my-menus">
-            <a href="myPage-favor">
+            <a href="myPage-act?gubn=F">
                 <img class="my-img" src="static/images/favor.png">
                 <p>즐겨찾기 목록</p>
             </a>
         </div>
         <div class="my-menus">
-            <a href="myPage-visit">
+            <a href="myPage-act?gubn=V">
                 <img class="my-img" src="static/images/flag.png">
                 <p>방문기록</p>
             </a>
         </div>
         <div class="my-menus">
-            <a href="myPage-good">
+            <a href="myPage-act?gubn=G">
                 <img class="my-img" src="static/images/good.png">
                 <p>좋아요 목록</p>
             </a>

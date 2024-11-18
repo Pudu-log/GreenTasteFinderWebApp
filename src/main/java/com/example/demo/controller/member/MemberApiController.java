@@ -40,11 +40,17 @@ public class MemberApiController {
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<String>> login(@RequestBody MemberDto memberDto, HttpServletRequest request) {
         MemberDto result = memberService.login(memberDto.getId(), memberDto.getPw());
-        if (!result.getId().trim().isEmpty()) {
+        if (result != null && !result.getId().trim().isEmpty()) {
             HttpSession session = request.getSession();
             session.setAttribute("member", result);
             session.setMaxInactiveInterval(60 * 60);
-            return ResponseEntity.ok(new ApiResponse<>(ResponseStatus.SUCCESS, "로그인 성공"));
+
+            // ID가 "admin"인 경우 어드민 페이지로 이동
+            if ("admin".equals(result.getId())) {
+                return ResponseEntity.ok(new ApiResponse<>(ResponseStatus.SUCCESS, "/admin"));
+            }
+            // 일반 사용자라면 메인 페이지로 이동
+            return ResponseEntity.ok(new ApiResponse<>(ResponseStatus.SUCCESS, "/"));
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                     new ApiResponse<>(ResponseStatus.BAD_REQUEST, "로그인 실패"));

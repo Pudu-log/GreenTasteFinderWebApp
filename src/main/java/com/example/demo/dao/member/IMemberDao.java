@@ -17,14 +17,14 @@ public interface IMemberDao {
 
     List<RoomDto> selectBox();
 
-    int update(@Param("member") MemberDto memberDto);
+    int memberUpdate(@Param("member") MemberDto memberDto);
 
     int deleteMember(String id);
 
     MemberDto getMemberById(@Param("id") String id);
 
-    List<MemberDto> memberList();
+    List<MemberDto> memberList(@Param("offset") int offset,@Param("keyword") String keyword);
 
-
+    int getCount(String keyword);
 
 }

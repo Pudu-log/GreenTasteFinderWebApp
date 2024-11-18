@@ -33,45 +33,57 @@
             </div>
 
             <div class="store-content">
+
                 <div class="store-box">
                     <div class="store-img border-tl-10">
-                        <img class="border-tl-10" src="https://breffee.net/data/editor/2210/20221013104826_fd5326c8ac17c04c88d91f03a8d313d8_5r8y.jpg">
+                        <img class="border-tl-10" src="${img}">
                     </div>
                     <div class="store-wrap">
                         <div class="store-title border-tr-10">
-                            <span class="border-tr-10"> 나는 가게이름~ 나는 가게이름~ 나는 가게이름~ 나는 가게이름~ 나는 가게이름~ 나는 가게이름~ 나는 가게이름~ 나는 가게이름~</span>
+                            <span class="border-tr-10">${store.name}</span>
                         </div>
                         <div class="store-gbn">
-                            <span>나는 중식!</span>
+                            <span>${store.types[0]}</span>
                         </div>
                         <div class="store-distance">
-                            <span>100m</span>
+                            <span>${distance}M</span>
                         </div>
                     </div>
                     <div class="store-2wrap">
                         <div class="store-addr">
-                            <span>나는 주소~ 나는 주소~ 나는 주소~ 나는 주소~ 나는 주소~ 나는 주소~ 나는 주소~ 나는 주소~ 나는 주소~ 나는 주소~ </span>
+                            <span>${store.formatted_address}</span>
                         </div>
-
+                        <div class="store-vote-wrap">
+                            <span>홍길동 외 1명</span>
+                        </div>
+                        <div class="store-status">
+                            <span>운영중</span>
+                        </div>
+                        <div class="store-vote-list">
+                            <ul>
+                                <li>홍길동</li>
+                                <li>홍길순</li>
+                                <li>홍길자</li>
+                                <li>홍길민</li>
+                                <li>홍길민</li>
+                                <li>홍길민</li>
+                                <li>홍길민</li>
+                                <li>홍길민</li>
+                                <li>홍길민</li>
+                                <li>홍길민</li>
+                                <li>홍길민</li>
+                                <li>홍홍홍</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
-                <div class="store-box"></div>
-                <div class="store-box"></div>
-                <div class="store-box"></div>
-                <div class="store-box"></div>
-                <div class="store-box"></div>
-                <div class="store-box"></div>
             </div>
-            <%--<div class="store-list">
-                <div class="store">
-                    <div class="store-img">
-                        <img src="https://breffee.net/data/editor/2210/20221013104826_fd5326c8ac17c04c88d91f03a8d313d8_5r8y.jpg">
-                    </div>
-                </div>
-            </div>--%>
         </div>
 
         <jsp:include page="layout/footer.jsp" />
 
     </body>
 </html>
+
+<script type="module" src="/static/script/voteStore.js"></script>
+

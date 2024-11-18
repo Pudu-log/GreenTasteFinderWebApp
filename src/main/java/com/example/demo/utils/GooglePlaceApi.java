@@ -1,11 +1,8 @@
-package com.example.demo.service;
+package com.example.demo.utils;
 
-import com.example.demo.dao.IVoteStoreDao;
-import com.example.demo.dto.VoteStoreDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -15,10 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class VoteStoreService {
-
-    @Autowired
-    IVoteStoreDao voteStoreDao;
+public class GooglePlaceApi {
 
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
@@ -26,14 +20,14 @@ public class VoteStoreService {
     @Value("${google.api.key}")
     private String API_KEY;
     private static final String URL = "https://maps.googleapis.com/maps/api/place/details/json";
-    private static String[] place_keys;
+    private static List<String> place_keys;
 
-    public VoteStoreService(RestTemplate restTemplate, ObjectMapper objectMapper) {
+    public GooglePlaceApi(RestTemplate restTemplate, ObjectMapper objectMapper) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
     }
 
-    public void init(String[] places) {
+    public void init(List<String> places) {
         place_keys = places;
     }
 
@@ -75,10 +69,6 @@ public class VoteStoreService {
         }
 
         return result;
-    }
-
-    public List<VoteStoreDto> getList(){
-        return voteStoreDao.getList();
     }
 
 }

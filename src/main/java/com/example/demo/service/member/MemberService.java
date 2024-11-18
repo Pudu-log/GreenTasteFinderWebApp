@@ -2,7 +2,7 @@ package com.example.demo.service.member;
 
 import com.example.demo.dao.member.IMemberDao;
 import com.example.demo.dto.MemberDto;
-import com.example.demo.dto.SelectBoxDto;
+import com.example.demo.dto.RoomDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +22,7 @@ public class MemberService {
         return memberDao.memberInsert(member);
     }
 
-    public List<SelectBoxDto> getSelectBox() {
+    public List<RoomDto> getSelectBox() {
         return memberDao.selectBox();
     }
 
@@ -34,4 +34,7 @@ public class MemberService {
         return memberDao.login(id,password);
     }
 
+    public int getCount(){
+        return memberDao.getCount();
+    }
 }

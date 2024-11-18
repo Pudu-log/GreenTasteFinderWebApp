@@ -1,10 +1,13 @@
 let isDuplicateChecked = false;
 
 document.addEventListener("DOMContentLoaded", function () {
+    /**
+     * 강의실 선택 박스 데이터 로드
+     * 서버에서 강의실 목록을 가져와 select 박스에 추가합니다.
+     */
     axios.get('/api/members/login/select-box')
         .then(response => {
             const rooms = response.data.data;
-            console.log(response);
             const roomSelect = document.getElementById('roomSelect');
             rooms.forEach(room => {
                 const option = document.createElement('option');
@@ -13,10 +16,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 roomSelect.append(option);
             });
         })
-        .catch(error => {
-            console.error(error);
-        });
+        .catch(error => console.error(error));
 
+    /**
+     * 비밀번호 확인 필드 실시간 유효성 검사
+     * 비밀번호와 확인 비밀번호가 일치하지 않을 경우 경고 메시지를 표시합니다.
+     */
     const passwordConfirmField = document.getElementById("pwdConfirm");
     const passwordError = document.getElementById("passwordError");
 
@@ -24,14 +29,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     passwordConfirmField.addEventListener("input", function () {
         const passwordField = document.getElementById("pwd");
-        if (passwordField.value !== passwordConfirmField.value) {
-            passwordError.style.display = "block";
-        } else {
-            passwordError.style.display = "none";
-        }
+        passwordError.style.display = (passwordField.value !== passwordConfirmField.value) ? "block" : "none";
     });
 });
 
+/**
+ * 회원가입 폼 유효성 검사
+ * @returns {boolean} 폼이 유효한 경우 true, 그렇지 않으면 false
+ */
 function validateForm() {
     if (!isDuplicateChecked) {
         alert("중복 체크를 먼저 수행해 주세요.");
@@ -70,19 +75,28 @@ function validateForm() {
         return showError("비밀번호는 영문, 숫자, 특수문자를 포함하여 최대 20자로 입력해 주세요", form.pw);
     }
 
-    if (form.pw.value !== form.pw.value) {
-        return showError("비밀번호가 일치하지 않습니다.", form.pw);
+    if (form.pw.value !== form.pwConfirm.value) {
+        return showError("비밀번호가 일치하지 않습니다.", form.pwConfirm);
     }
-
     return true;
 }
 
+/**
+ * 에러 메시지 표시 및 입력 필드에 포커스
+ * @param {string} message - 에러 메시지
+ * @param {HTMLElement} input - 포커스할 입력 필드
+ * @returns {boolean} 항상 false 반환
+ */
 function showError(message, input) {
     alert(message);
     input.focus();
     return false;
 }
 
+/**
+ * 아이디 중복 체크
+ * 서버에 중복 여부를 확인하고 결과에 따라 알림을 표시합니다.
+ */
 function idCheck() {
     const form = document.forms["signupForm"];
     const idValue = form["id"].value;
@@ -108,6 +122,10 @@ function idCheck() {
         });
 }
 
+/**
+ * 회원가입 폼 제출
+ * 폼 유효성 검사를 통과한 경우 서버에 데이터를 전송합니다.
+ */
 document.forms["signupForm"].addEventListener("submit", function (event) {
     event.preventDefault();
 
@@ -129,6 +147,6 @@ document.forms["signupForm"].addEventListener("submit", function (event) {
         })
         .catch(error => {
             console.error(error);
-            alert("회원가입 실패")
+            alert("회원가입 실패");
         });
 });

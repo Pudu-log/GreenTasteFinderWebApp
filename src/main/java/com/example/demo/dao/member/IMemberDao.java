@@ -1,7 +1,7 @@
 package com.example.demo.dao.member;
 
 import com.example.demo.dto.MemberDto;
-import com.example.demo.dto.SelectBoxDto;
+import com.example.demo.dto.RoomDto;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -15,6 +15,18 @@ public interface IMemberDao {
 
     MemberDto login(@Param("id") String id, @Param("pw") String pw);
 
-    List<SelectBoxDto> selectBox();
+    List<RoomDto> selectBox();
+
+    int update(@Param("member") MemberDto memberDto);
+
+    int deleteMember(String id);
+
+    MemberDto getMemberById(@Param("id") String id);
+
+    List<MemberDto> memberList(@Param("offset") int offset);
+
+    int getCount();
+
+
 
 }

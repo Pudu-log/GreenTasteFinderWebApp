@@ -1,0 +1,121 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #1e1e2f;
+    color: #e0e0e0;
+}
+
+.admin-header {
+    background-color: #2b2b40;
+    color: #ffffff;
+    padding: 20px;
+    text-align: center;
+    font-size: 1.8em;
+    font-weight: bold;
+    border-bottom: 2px solid #5050f0;
+}
+
+.tab-menu {
+    display: flex;
+    background-color: #2b2b40;
+}
+
+.tab-menu button {
+    flex: 1;
+    padding: 15px 0;
+    border: none;
+    background-color: #2b2b40;
+    cursor: pointer;
+    color: #8a8ab5;
+    font-size: 1.2em;
+    transition: all 0.3s;
+}
+
+.tab-menu button:hover, .tab-menu button.active {
+    background-color: #3a3a55;
+    color: #ffffff;
+    border-bottom: 3px solid #5050f0;
+}
+
+.content {
+    padding: 30px;
+}
+
+.user-table, .room-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #292942;
+    color: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+.user-table th, .user-table td, .room-table th, .room-table td {
+    border: 1px solid #3a3a55;
+    padding: 15px;
+    text-align: left;
+}
+
+.user-table th, .room-table th {
+    background-color: #3a3a55;
+    font-weight: bold;
+}
+
+.user-table tr:hover, .room-table tr:hover {
+    background-color: #404062;
+}
+
+h2 {
+    color: #ffffff;
+    border-bottom: 2px solid #5050f0;
+    display: inline-block;
+    padding-bottom: 5px;
+}
+
+p {
+    color: #c0c0d6;
+}
+
+.room-form {
+    margin-top: 20px;
+}
+
+.room-form input, .room-form button {
+    padding: 10px;
+    margin-right: 10px;
+}
+
+.paging-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.paging-buttons button {
+    background-color: #3a3a55;
+    color: #ffffff;
+    border: 1px solid #5050f0;
+    padding: 10px 20px;
+    margin: 0 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1em;
+}
+
+.paging-buttons button:hover {
+    background-color: #5050f0;
+    color: #e0e0e0;
+    transform: scale(1.1);
+}
+
+.paging-buttons button.active {
+    background-color: #5050f0;
+    font-weight: bold;
+    cursor: default;
+}
+
+.paging-buttons button.active:hover {
+    transform: none;
+}

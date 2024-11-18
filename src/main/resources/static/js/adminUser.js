@@ -1,9 +1,10 @@
 /**
- * 사용자 목록 불러오기
- * @param {number} page - 현재 페이지 번호 (기본값: 1)
+ * 사용자 목록을 서버에서 가져와 테이블을 업데이트하고 히스토리 상태를 저장합니다.
+ * @param {number} page - 현재 페이지 번호
+ * @param {string} [keyword=''] - 검색어
  */
-function getMemberList(page = 1) {
-    axios.get(`/api/admin/member-list?page=${page}`)
+function getMemberList(page = 1, keyword = '') {
+    axios.get(`/api/admin/member-list?page=${page}&keyword=${encodeURIComponent(keyword)}`)
         .then(response => {
             const {members, pagingBtn} = response.data.data;
 
@@ -11,17 +12,21 @@ function getMemberList(page = 1) {
                 console.error('회원 데이터가 없습니다.');
                 return;
             }
+
             updateTable('#user-management tbody', members, createMemberRow);
-            updatePagingButtons(pagingBtn, getMemberList);
+            updatePagingButtons(pagingBtn, (newPage) => {
+                getMemberList(newPage, keyword);
+                pushHistoryState({tab: 'user-management', page: newPage, keyword});
+            });
         })
-        .catch(error => console.error(`사용자 목록 가져오는 중 오류: ${error}`));
+        .catch(error => console.error(`사용자 목록 오류: ${error}`));
 }
 
 /**
- * 사용자 목록 테이블 업데이트
- * @param {string} tableBodySelector - 테이블 tbody
+ * 사용자 데이터를 기반으로 테이블을 업데이트합니다.
+ * @param {string} tableBodySelector - 테이블의 tbody를 선택할 CSS 셀렉터
  * @param {Array} data - 사용자 데이터 배열
- * @param {Function} rowGenerator - 행 생성 함수
+ * @param {Function} rowGenerator - 데이터 항목을 기반으로 행을 생성하는 함수
  */
 function updateTable(tableBodySelector, data, rowGenerator) {
     const tbody = document.querySelector(tableBodySelector);
@@ -30,16 +35,11 @@ function updateTable(tableBodySelector, data, rowGenerator) {
 }
 
 /**
- * 사용자 목록 생성
+ * 단일 사용자 데이터를 기반으로 테이블 행을 생성합니다.
  * @param {Object} member - 사용자 데이터
- * @returns {HTMLTableRowElement} 생성된 테이블 행
  */
 function createMemberRow(member) {
     const row = document.createElement('tr');
-
-    function formatDate(date) {
-        return date ? new Date(date).toISOString().split('T')[0] : '-';
-    }
 
     row.innerHTML = `
         <td>${member.id}</td>
@@ -51,12 +51,48 @@ function createMemberRow(member) {
         <td>${member.adminYn === 'Y' ? '관리자' : '사용자'}</td>
         <td><button onclick="deleteMember('${member.id}')">삭제</button></td>
     `;
+
     return row;
 }
 
 /**
- * 페이징 버튼 생성 및 업데이트
- * @param {Object} pagingBtn - 페이징 버튼 데이터
+ *  회원 삭제
+ */
+function deleteMember(id) {
+    if (!confirm('이 사용자를 정말 삭제하시겠습니까?')) return;
+
+    const page = new URLSearchParams(window.location.search).get('page') || 1;
+    const keyword = document.getElementById('searchInput').value.trim();
+
+    axios.delete(`/api/admin/delete/${id}`)
+        .then(response => {
+            if (response.data.data === '삭제 성공') {
+                alert('사용자 삭제 성공');
+                getMemberList(page, keyword);
+            }else{
+                alert('삭제 실패');
+            }
+        })
+        .catch(error => {
+            console.error(`삭제 실패: ${error}`);
+            alert('삭제 실패.');
+        });
+}
+
+
+/**
+ * 날짜를 형식에 맞게 변환합니다.
+ * @param {string} date - 날짜 문자열
+ * @returns {string} 변환된 날짜
+ */
+function formatDate(date) {
+    return date ? new Date(date).toISOString().split('T')[0] : '-';
+}
+
+/**
+ * 페이징 버튼을 생성하고 업데이트합니다.
+ * @param {Object} pagingBtn - 페이징 데이터
+ * @param {Function} onPageClick - 페이지 버튼 클릭 시 호출할 함수
  */
 function updatePagingButtons(pagingBtn, onPageClick) {
     const pagingContainer = document.querySelector('#paging-buttons');
@@ -64,42 +100,32 @@ function updatePagingButtons(pagingBtn, onPageClick) {
 
     if (!pagingBtn) return;
 
-    // 맨처음 버튼
     if (pagingBtn.firstPageBtn) {
-        const firstButton = createPagingButton('<<', () => onPageClick(1));
-        pagingContainer.appendChild(firstButton);
+        pagingContainer.appendChild(createPagingButton('<<', () => onPageClick(1)));
     }
 
-    // 이전 버튼
     if (pagingBtn.prevBtn) {
-        const prevButton = createPagingButton('<', () => onPageClick(pagingBtn.startPage - 1));
-        pagingContainer.appendChild(prevButton);
+        pagingContainer.appendChild(createPagingButton('<', () => onPageClick(pagingBtn.startPage - 1)));
     }
 
-    // 페이지 번호 버튼
     for (let i = pagingBtn.startPage; i <= pagingBtn.endPage; i++) {
-        const pageButton = createPagingButton(i, () => onPageClick(i), i === pagingBtn.currentPage);
-        pagingContainer.appendChild(pageButton);
+        pagingContainer.appendChild(createPagingButton(i, () => onPageClick(i), i === pagingBtn.currentPage));
     }
 
-    // 다음 버튼
     if (pagingBtn.nextBtn) {
-        const nextButton = createPagingButton('>', () => onPageClick(pagingBtn.endPage + 1));
-        pagingContainer.appendChild(nextButton);
+        pagingContainer.appendChild(createPagingButton('>', () => onPageClick(pagingBtn.endPage + 1)));
     }
 
-    // 맨끝 버튼
     if (pagingBtn.lastPageBtn) {
-        const lastButton = createPagingButton('>>', () => onPageClick(pagingBtn.totalPage));
-        pagingContainer.appendChild(lastButton);
+        pagingContainer.appendChild(createPagingButton('>>', () => onPageClick(pagingBtn.totalPage)));
     }
 }
 
 /**
- * 페이징 버튼 생성
- * @param {string|number} text - 버튼 텍스트
+ * 페이징 버튼을 생성
+ * @param {string|number} text - 버튼에 표시할 텍스트
+ * @param {Function} onClick - 버튼 클릭 시 호출할 함수
  * @param {boolean} [isActive=false] - 활성화 여부
- * @returns {HTMLButtonElement} 생성된 버튼
  */
 function createPagingButton(text, onClick, isActive = false) {
     const button = document.createElement('button');
@@ -111,4 +137,35 @@ function createPagingButton(text, onClick, isActive = false) {
     }
 
     return button;
+}
+
+/**
+ * 뒤로가기/앞으로가기 이벤트 발생 시 상태를 복원
+ */
+window.addEventListener('popstate', (event) => {
+    const state = event.state;
+    if (state) {
+        const {tab, page, keyword} = state;
+
+        if (tab) showTab(tab);
+
+        if (tab === 'user-management') {
+            document.getElementById('searchInput').value = keyword || '';
+            getMemberList(page || 1, keyword || '');
+        }
+
+        if (tab === 'lecture-management') {
+            getRoomList();
+        }
+    }
+});
+
+/**
+ * 검색창의 값을 기반으로 사용자 목록을 필터링하고 히스토리에 상태를 저장
+ */
+function searchUsers() {
+    const keyword = document.getElementById('searchInput').value.trim();
+    const page = 1;
+    getMemberList(page, keyword);
+    pushHistoryState({tab: 'user-management', page, keyword});
 }

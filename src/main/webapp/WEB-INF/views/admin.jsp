@@ -6,6 +6,7 @@
         <title>관리자 페이지</title>
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> <!-- Axios 추가 -->
         <link rel="stylesheet" href="/static/css/admin.css">
+        <link rel="icon" href="data:,">
     </head>
     <body>
         <div class="admin-header">관리자 페이지</div>
@@ -16,6 +17,10 @@
         <div class="content">
             <div id="user-management" class="tab-content">
                 <h2>사용자 관리</h2>
+                <div class="search-container">
+                    <input type="text" id="searchInput" placeholder="검색 (아이디, 이름, 강의실)">
+                    <button onclick="searchUsers()">검색</button>
+                </div>
                 <table class="user-table">
                     <thead>
                         <tr>
@@ -51,7 +56,7 @@
                 </table>
                 <!-- 강의실 추가 폼 -->
                 <div class="room-form">
-                    <input type="text" id="roomCode" placeholder="강의실 코드">
+                    <input type="number" id="roomCode" placeholder="강의실 코드">
                     <input type="text" id="roomName" placeholder="강의실 이름">
                     <button onclick="insertRoom()">강의실 추가</button>
                 </div>

@@ -25,6 +25,12 @@
         <form class="styled-form" onsubmit="return validateForm()">
             <h4>내 정보</h4>
 
+            ${member}
+            <div class="form-group">
+                <label>아이디</label>
+                <span>${member}</span>
+            </div>
+
             <div class="form-group">
                 <label>아이디</label>
                 <input type="text" readonly value="${member.id}">
@@ -45,6 +51,11 @@
                 <label for="roomSelect">강의실</label>
                 <select name="roomCode" id="roomSelect" class="room-select">
                 </select>
+            </div>
+
+            <div class="form-group">
+                <label for="email">이메일</label>
+                <input type="text" name="email" id="email" value="${member.email}" autocomplete="off">
             </div>
 
             <div class="form-group">

@@ -15,5 +15,4 @@ function setSelect(roomCode) {
         .catch(error => {
             console.error(error);
         });
-    //
 }

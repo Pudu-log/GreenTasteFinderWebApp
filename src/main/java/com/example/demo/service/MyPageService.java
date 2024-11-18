@@ -27,12 +27,13 @@ public class MyPageService {
         return memberDao.getMemberById(id);
     }
 
-    public List<String> getActStoreList(String val, String id) {
-        if (val.equals("B")) {
-            return myPageActDao.getFavorStoreList(id);
-        } else if (val.equals("G")) {
-            return myPageActDao.getGoodStoreList(id);
-        }
-        return null;
+    public List<String> getActStoreList(String gubn, String id) {
+        return myPageActDao.getActStoreList(gubn, id);
+//        if (val.equals("B")) {
+//            return myPageActDao.getFavorStoreList(id);
+//        } else if (val.equals("G")) {
+//            return myPageActDao.getGoodStoreList(id);
+//        }
+//        return null;
     }
 }

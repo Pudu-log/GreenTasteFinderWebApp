@@ -9,4 +9,7 @@
     <select id="getFavorStoreList">
         SELECT store_id FROM tbl_act WHERE gubn = 'B' AND id = #{id}
     </select>
+    <select id="getActStoreList">
+        SELECT store_id FROM tbl_act WHERE gubn = #{gubn} AND id = #{id}
+    </select>
 </mapper>

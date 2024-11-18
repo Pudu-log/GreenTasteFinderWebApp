@@ -9,4 +9,5 @@ import java.util.List;
 public interface IMyPageActDao {
     List<String> getGoodStoreList(@Param("id") String id);
     List<String> getFavorStoreList(@Param("id") String id);
+    List<String> getActStoreList(@Param("id") String id, @Param("gubn") String gubn);
 }

@@ -6,6 +6,16 @@ $(function () {
     func.get.storeInfo();
 
     document.querySelector("input[name=title-date]").addEventListener("change", function () {
+        let date = document.querySelector("input[name=title-date]").value;
+
+        let now = new Date();
+        let inputDate = new Date(date);
+
+        if (inputDate > now){
+            document.querySelector("input[name=title-date]").value = func.set.dateFormat(now);
+            return;
+        }
+
         func.get.storeInfo();
     });
 
@@ -15,6 +25,7 @@ $(function () {
 
     $(document).on("dblclick", ".store-box", function (){
         let date = document.querySelector("input[name=title-date]").value;
+
         let place_id = this.dataset.place_id;
         let type = this.classList.contains("on") ? "D" : "E";
 

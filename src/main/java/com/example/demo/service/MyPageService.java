@@ -18,8 +18,8 @@ public class MyPageService {
     IMemberDao memberDao;
 
     // tbl_user 업데이트
-    public int update(MemberDto memberDto) {
-        return memberDao.update(memberDto);
+    public int memberUpdate(MemberDto memberDto) {
+        return memberDao.memberUpdate(memberDto);
     }
 
     // 아이디로 멤버 가져오기

@@ -17,7 +17,7 @@ public interface IMemberDao {
 
     List<RoomDto> selectBox();
 
-    int update(@Param("member") MemberDto memberDto);
+    int memberUpdate(@Param("member") MemberDto memberDto);
 
     int deleteMember(String id);
 

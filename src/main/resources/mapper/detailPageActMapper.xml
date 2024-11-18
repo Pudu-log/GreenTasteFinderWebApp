@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.dao.detailPage.IDetailPageActDao">
+<!--
+    필요한거
+    (특정 인물)의 (좋아요, 북마크, 방문) 조회
+    (특정 인물)의 (좋아요, 북마크, 방문) 추가
+    (총) (좋아요) 수 조회
+    좋아요 북마크 삭제
+-->
+    <select id="likeAllSelect" resultType="_integer">
+        SELECT COUNT(*) AS COUNT FROM tbl_act WHERE store_id = #{act.store_id} AND gubn='G'
+    </select>
+    <select id="selectAct" resultType="com.example.demo.dto.ActDto">
+        SELECT * FROM tbl_act WHERE id = #{act.id} AND store_id=#{act.store_id} AND gubn=#{act.gubn}
+    </select>
+    <insert id="insertAct" parameterType="com.example.demo.dto.ActDto">
+        INSERT INTO tbl_act VALUES (#{act.id}, #{act.store_id}, DEFAULT,#{act.gubn})
+    </insert>
+    <delete id="deleteAct">
+        DELETE FROM tbl_act WHERE id = #{act.id} AND store_id=#{act.store_id} AND gubn=#{act.gubn}
+    </delete>
+</mapper>

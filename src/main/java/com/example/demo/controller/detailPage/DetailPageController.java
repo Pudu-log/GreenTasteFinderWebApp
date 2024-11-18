@@ -1,16 +1,13 @@
-package com.example.demo.controller;
+package com.example.demo.controller.detailPage;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 @Controller
-public class PageController {
+public class DetailPageController {
     @Value("${google.api.key}")
     private String GOOGLE_API_KEY;
 
@@ -24,6 +21,7 @@ public class PageController {
         String response = restTemplate.getForObject(url, String.class);
 
         model.addAttribute("response", response);
+        model.addAttribute("placeId", placeId);
         return "TestMap";
     }
 }

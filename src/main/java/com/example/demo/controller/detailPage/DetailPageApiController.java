@@ -1,18 +1,21 @@
 package com.example.demo.controller.detailPage;
 
 import com.example.demo.dao.detailPage.IDetailPageActDao;
-import com.example.demo.dto.ActDto;
+import com.example.demo.dto.Act.ActDto;
+import com.example.demo.dto.Act.TotalActDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/detailpage")
 public class DetailPageApiController {
 
+    private final IDetailPageActDao detailPageActDao;
+
     @Autowired
-    IDetailPageActDao detailPageActDao;
+    public DetailPageApiController(IDetailPageActDao detailPageActDao) {
+        this.detailPageActDao = detailPageActDao;
+    }
 
     @GetMapping("/likeAllSelect")
     public int likeAllSelect(ActDto act) {
@@ -22,6 +25,11 @@ public class DetailPageApiController {
     @GetMapping("/selectAct")
     public ActDto selectAct(ActDto act) {
         return detailPageActDao.selectAct(act);
+    }
+
+    @GetMapping("/selectTotalAct")
+    public TotalActDto selectTotalAct(ActDto act) {
+        return detailPageActDao.selectTotalAct(act);
     }
 
     @PostMapping("/insertAct")

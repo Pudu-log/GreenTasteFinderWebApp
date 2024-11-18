@@ -34,7 +34,7 @@ body{
 
 /* 버튼 스타일 적용 */
 .action-button{
-    background-color: #4CAF50;
+    background-color: #616161;
     color: white;
     border: none;
     padding: 10px 15px;
@@ -47,6 +47,12 @@ body{
 
 .action-button:hover {
     background-color: #45a049;
+}
+
+.action-button.active {
+    background-color: #4CAF50;
+
+    color: white;
 }
 
 /* 좋아요 갯수 표시 스타일 */

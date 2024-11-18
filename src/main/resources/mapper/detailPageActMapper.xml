@@ -6,12 +6,22 @@
     <select id="likeAllSelect" resultType="_integer">
         SELECT COUNT(*) AS COUNT FROM tbl_act WHERE store_id = #{act.store_id} AND gubn='G'
     </select>
-    <select id="selectAct" resultType="com.example.demo.dto.ActDto">
+    <select id="selectAct" resultType="com.example.demo.dto.Act.ActDto">
         SELECT * FROM tbl_act WHERE id = #{act.id} AND store_id=#{act.store_id} AND gubn=#{act.gubn}
     </select>
 
+    <select id="selectTotalAct" resultType="com.example.demo.dto.Act.TotalActDto">
+        SELECT
+        SUM(IF(gubn='F',1,0)) AS fCnt,
+        SUM(IF(gubn='G',1,0)) AS gCnt,
+        SUM(IF(gubn='V',1,0)) AS vCnt,
+        (SELECT COUNT(*) FROM tbl_act WHERE store_id = #{act.store_id} AND gubn='G') AS totalG
+        FROM tbl_act
+        WHERE id = #{act.id}
+        AND store_id = #{act.store_id}
+    </select>
 
-    <insert id="insertAct" parameterType="com.example.demo.dto.ActDto">
+    <insert id="insertAct" parameterType="com.example.demo.dto.Act.ActDto">
         INSERT INTO tbl_act VALUES (#{act.id}, #{act.store_id}, DEFAULT,#{act.gubn})
     </insert>
     <delete id="deleteAct">

@@ -10,7 +10,8 @@
 </head>
 <body>
 <%
-    session.setAttribute("id","aaa50");
+    // TODO  테스트용 세션 나중에 지워야 함
+    session.setAttribute("testId", "aaa50");
 %>
 <jsp:include page="layout/header.jsp"/>
 <jsp:include page="layout/nav.jsp"/>
@@ -52,39 +53,92 @@
 
 
 <script type="text/javascript">
-    let inputData = ${response}.result;
+    let inputData =
+    ${response}.result;
+    // let sessionId = "${sessionScope.testId}";
+    let sessionId = "${sessionScope.member.id}";
     let placeId = "${placeId}";
 </script>
 <script>
-    axios.get('api/detailpage/likeAllSelect?store_id=' + placeId +'&gubn=G')
+    axios.get('/api/detailpage/selectTotalAct?id=' + sessionId + '&store_id=' + placeId)
         .then((response) => {
-            $('#like-count').text(response.data);
+            console.log(response.data);
+            $('#like-count').text(response.data.totalG);
+            if (response.data.gcnt > 0) {
+                $('#like-button').addClass('active');
+            }
+            if (response.data.fcnt > 0) {
+                $('#favorite-button').addClass('active');
+            }
+            if (response.data.vcnt > 0) {
+                $('#visit-button').addClass('active');
+            }
         })
         .catch((error) => {
             console.log(error);
         })
 
+    function deleteAct(id, store_id, gubn, inputId) {
+        axios.delete('api/detailpage/deleteAct?id=' + id + '&store_id=' + store_id + '&gubn=' + gubn)
+            .then((response) => {
+                console.log(response.data);
+                inputId.removeClass('active');
+                likeAllSelect(placeId);
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+    }
 
-    //본인 좋아요 조회
-    //북마크 조회하고
-    //위 세가지 조건이 true일시 버튼 색변화, 삭제로 기능 변경
-    //방문여부 조회
+    function insertAct(id, store_id, gubn, inputId) {
+        axios.post('/api/detailpage/insertAct', {
+            id: id,
+            store_id: store_id,
+            gubn: gubn
+        })
+            .then((response) => {
+                inputId.addClass('active');
+                console.log(response.data);
+                likeAllSelect(placeId);
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+    }
 
-    //추가하고 좋아요 수 갱신
+    function likeAllSelect(placeId){
+        axios.get('/api/detailpage/likeAllSelect?store_id=' + placeId)
+            .then((response) => {
+                console.log(response.data);
+                $('#like-count').text(response.data);
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+    }
+
     $('#like-button').click(function () {
-
+        if ($(this).hasClass('active')) {
+            deleteAct(sessionId, placeId, 'G', $(this));
+        } else {
+            insertAct(sessionId, placeId, 'G', $(this));
+        }
     })
 
-    //북마크 추가하기(재클릭 -> 삭제)
-    //북마크 여부 갱신
     $('#favorite-button').click(function () {
-
+        if ($(this).hasClass('active')) {
+            deleteAct(sessionId, placeId, 'F', $(this));
+        } else {
+            insertAct(sessionId, placeId, 'F', $(this));
+        }
     })
 
-    //방문여부 추가하기(삭제x)
-    //방문여부 갱신
     $('#visit-button').click(function () {
-
+        if ($(this).hasClass('active')) {
+            deleteAct(sessionId, placeId, 'V', $(this));
+        } else {
+            insertAct(sessionId, placeId, 'V', $(this));
+        }
     })
 
 

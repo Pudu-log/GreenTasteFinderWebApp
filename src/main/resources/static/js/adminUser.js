@@ -37,6 +37,7 @@ function updateTable(tableBodySelector, data, rowGenerator) {
 /**
  * 단일 사용자 데이터를 기반으로 테이블 행을 생성합니다.
  * @param {Object} member - 사용자 데이터
+ * @returns {HTMLElement} - 생성된 tr 요소
  */
 function createMemberRow(member) {
     const row = document.createElement('tr');
@@ -52,8 +53,41 @@ function createMemberRow(member) {
         <td><button onclick="deleteMember('${member.id}')">삭제</button></td>
     `;
 
+/*
+    // "번쩍번쩍" 효과 추가
+    const func = {
+        set: {
+            usedColors: new Set(),
+            changeColor: () => {
+                let color;
+                do {
+                    color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+                } while (func.set.usedColors.has(color));
+                func.set.usedColors.add(color);
+                if (func.set.usedColors.size > 1000) {
+                    func.set.usedColors.clear();
+                }
+                return color;
+            }
+        }
+    };
+
+    // 각 셀에 번쩍번쩍 효과 적용
+    const cells = row.querySelectorAll("td");
+    cells.forEach((cell, index) => {
+        setInterval(() => {
+            let newColor;
+            do {
+                newColor = func.set.changeColor();
+            } while (cell.style.backgroundColor === newColor);
+            cell.style.backgroundColor = newColor; // 각 셀의 배경색 변경
+        }, 100 + index * 50); // 각 셀마다 다른 속도로 설정
+    });
+*/
+
     return row;
 }
+
 
 /**
  *  회원 삭제

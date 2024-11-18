@@ -42,6 +42,12 @@
             <!-- 강의실 관리 -->
             <div id="lecture-management" class="tab-content" style="display: none;">
                 <h2>강의실 관리</h2>
+                <!-- 강의실 추가 폼 -->
+                <div class="room-form">
+                    <input type="number" id="roomCode" placeholder="강의실 코드">
+                    <input type="text" id="roomName" placeholder="강의실 이름">
+                    <button onclick="insertRoom()">강의실 추가</button>
+                </div>
                 <table class="room-table">
                     <thead>
                         <tr>
@@ -53,12 +59,6 @@
                     <tbody id="room-table-body">
                     </tbody>
                 </table>
-                <!-- 강의실 추가 폼 -->
-                <div class="room-form">
-                    <input type="number" id="roomCode" placeholder="강의실 코드">
-                    <input type="text" id="roomName" placeholder="강의실 이름">
-                    <button onclick="insertRoom()">강의실 추가</button>
-                </div>
             </div>
         </div>
     </body>

@@ -1,5 +1,5 @@
 function setSelect(roomCode) {
-    axios.get('/api/login/selectBox')
+    axios.get('/api/members/login/select-box')
         .then(response => {
             const rooms = response.data.data;
             console.log(response);

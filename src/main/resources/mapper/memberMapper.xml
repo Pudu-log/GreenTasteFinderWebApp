@@ -17,7 +17,7 @@
     </select>
 
     <select id="login" resultType="MemberDto">
-        SELECT id, name, room_code as roomCode, admin_yn as adminYn
+        SELECT *, room_code as roomCode, admin_yn as adminYn, insert_dt as insertDt, update_dt as updateDt
         FROM tbl_user WHERE id = #{id} and pw = #{pw}
     </select>
 
@@ -32,11 +32,11 @@
     </delete>
 
     <select id="getMemberById" resultType="MemberDto">
-        SELECT *, room_code as roomCode FROM tbl_user WHERE id = #{id}
+        SELECT *, room_code as roomCode, admin_yn as adminYn, insert_dt as insertDt, update_dt as updateDt FROM tbl_user WHERE id = #{id}
     </select>
 
     <select id="memberList" resultType="MemberDto">
-        SELECT *, room_code as roomCode, admin_yn as adminYn, insert_dt as insertDt
+        SELECT *, room_code as roomCode, admin_yn as adminYn, insert_dt as insertDt, update_dt as updateDt
         FROM tbl_user
         ORDER BY insert_dt
         LIMIT #{offset}, 10;

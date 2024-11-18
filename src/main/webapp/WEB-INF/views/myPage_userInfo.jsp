@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="static/css/mypage/myPage_userInfo.css">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
 </head>
 <body>
 <jsp:include page="layout/header.jsp"/>
@@ -25,10 +26,13 @@
         <form class="styled-form" onsubmit="return validateForm()">
             <h4>내 정보</h4>
 
-            ${member}
             <div class="form-group">
-                <label>아이디</label>
-                <span>${member}</span>
+                <label>가입일시</label>
+                <span>${member.insertDt}</span>
+            </div>
+
+            <div class="form-group" id="update-div">
+
             </div>
 
             <div class="form-group">
@@ -40,6 +44,10 @@
                 <label for="pw">비밀번호</label>
                 <input type="password" name="pw" id="pw" value="member.pw" placeholder="*****" autocomplete="off"
                        readonly>
+            </div>
+            <div class="form-group">
+                <label for="pw"></label>
+                <button id="changePw-btn">비밀번호 변경</button>
             </div>
 
             <div class="form-group">
@@ -64,16 +72,37 @@
                        value="<fmt:formatDate value='${member.birth}' pattern='yyyy-MM-dd' />" autocomplete="off">
             </div>
 
-
             <button type="submit" class="submit-btn">수정</button>
         </form>
     </div>
 </div>
-<jsp:include page="layout/footer.jsp"/>
 
+<!-- Add this before the closing </body> tag -->
+<div id="passwordModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <br>
+        <h4>비밀번호 변경</h4>
+        <form name="passwordChangeForm">
+            <div class="form-group">
+                <label for="newPassword">새 비밀번호</label>
+                <input type="password" id="newPassword" name="newPassword" required>
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword">비밀번호 확인</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" required>
+            </div>
+            <button type="submit" class="submit-btn">변경</button>
+        </form>
+    </div>
+</div>
+<jsp:include page="layout/footer.jsp"/>
 </body>
 <script src="/static/js/myPage/myPage_userInfo.js"></script>
 <script>
-    setSelect(${member.roomCode});
+    $(document).ready(function () {
+        setUpdateDiv("${member.updateDt}");
+        setSelect(${member.roomCode});
+    })
 </script>
 </html>

@@ -13,6 +13,6 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="https://code.jquery.com/jquery-latest.min.js"></script>
 <div class="header">
-    <h1>Website Header</h1>
-    <p>This is the header area of the website.</p>
+    <h1>코딩해서 밥 벌어 묵자</h1>
+    <p>그린아카데미 별관2.ver</p>
 </div>

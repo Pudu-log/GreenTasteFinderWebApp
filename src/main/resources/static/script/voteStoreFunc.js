@@ -81,6 +81,7 @@ export let func = {
                 let distance = func.get.distance(lat1, lng1, lat2, lng2)
                 html +=
                     `<div class="store-box ${myPlace}" data-place_id="${store.place_id}">
+                        <div class="store-box-result ${myPlace}">투표중</div>
                         <div class="store-img border-tl-10">
                             <img class="border-tl-10" src="${img}">
                         </div>

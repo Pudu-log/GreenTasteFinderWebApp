@@ -25,7 +25,7 @@
                    autocomplete="off">
             <span class="error" id="passwordError">비밀번호가 일치하지 않습니다.</span>
 
-            <input type="text" name="name" placeholder="Name" autocomplete="off">
+            <input type="text" name="name" placeholder="Name" maxlength="20" autocomplete="off">
             <select name="roomCode" id="roomSelect" class="room-select">
                 <option value="">강의실을 선택해 주세요</option>
             </select>

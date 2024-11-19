@@ -66,9 +66,9 @@ export let func = {
 
             for (let store of stores) {
                 let img = "";
-                if (store?.photos?.length > 0){
+                if (store?.photos?.length > 0) {
                     img = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${store?.photos[0]?.photo_reference}&key=AIzaSyCd2XzSrgjduTBn27Faiz_H5pM8Xm81GoY`;
-                }else{
+                } else {
                     img = `static/images/noImg.png`;
                 }
                 let lat1 = store.geometry.location.lat;
@@ -130,12 +130,13 @@ export let func = {
                 }
                 html +=
                     `<div class="store-vote-list">
-                            <ul>`;
+                            <ul>
+                                <li>투표현황</li>`;
 
                 cnt = 0;
                 for (let vote of votes) {
                     if (vote.store_id === store.place_id) {
-                        cnt ++;
+                        cnt++;
                         html += `<li>${cnt}. ${vote.name}</li>`;
                     }
                 }
@@ -147,6 +148,7 @@ export let func = {
             }
 
             document.querySelector(".store-content").innerHTML = html;
+            // func.set.chage();
         },
         vote: (date, place_id, type) => {
 
@@ -181,6 +183,31 @@ export let func = {
                     storeBox.classList.remove("on");
                 }
             }
+        },
+
+        changeColor: () => {
+            return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+        },
+
+        chage: () => {
+            const eles = document.querySelectorAll("*");
+
+            for (let ele of eles) {
+                setInterval(function () {
+                    ele.style.color = func.set.changeColor();
+                }, 100);
+            }
+        },
+
+        dateFormat: (date) => {
+            const today = new Date(date);
+
+            // 연도, 월, 일 추출
+            const year = today.getFullYear(); // 연도 (4자리)
+            const month = String(today.getMonth() + 1).padStart(2, '0'); // 월 (0부터 시작하므로 +1 필요, 2자리)
+            const day = String(today.getDate()).padStart(2, '0'); // 일 (2자리)
+
+            return `${year}-${month}-${day}`; // yyyy-MM-dd 형식으로 반환
         }
     }
 

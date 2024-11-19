@@ -122,6 +122,7 @@ document.forms["update-form"].addEventListener("submit", function (event) {
 
     axios.post('/api/my/memberUpdate', formData)
         .then(() => {
+            alert("수정 완료");
             location.href = "/myPage-userInfo";
         })
         .catch(error => {

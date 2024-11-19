@@ -12,7 +12,9 @@ public class DetailPageController {
     private String GOOGLE_API_KEY;
 
     @GetMapping("/detail")
-    public String detail(/*@PathVariable("placeId") String placeId */ Model model) {
+    //@GetMapping("/detail/{placeId}")
+    //public String detail(@PathVariable("placeId") String placeId, Model model) {
+    public String detail(Model model) {
         // ChIJMcasLGnraDUR3an68Jt0eEs 한옥마을 id, 오픈시간 참고용
         // TODO 테스트용 위치 ID. 추후 지울것
         String placeId = "ChIJX0sLfm7raDURBSWF14n0VD0";
@@ -24,6 +26,6 @@ public class DetailPageController {
 
         model.addAttribute("response", response);
         model.addAttribute("placeId", placeId);
-        return "TestMap";
+        return "detailPage";
     }
 }

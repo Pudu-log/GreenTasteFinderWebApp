@@ -7,5 +7,5 @@ import org.apache.ibatis.annotations.Param;
 public interface IMainPageDao {
 
     // 좋아요/즐겨찾기 추가
-    int insertAct(@Param("memberId") String id, @Param("storeId") String storeId, @Param("gubn") String gubn);
+    //int insertAct(@Param("memberId") String id, @Param("storeId") String storeId, @Param("gubn") String gubn);
 }

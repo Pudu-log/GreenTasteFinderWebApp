@@ -2,68 +2,51 @@ package com.example.demo.controller.mainPage;
 
 import com.example.demo.model.Restaurant;
 import com.example.demo.service.MainPageService;
-import com.example.demo.utils.ApiResponse;
-import com.example.demo.utils.PagingBtn;
-import com.example.demo.type.ResponseStatus;
+import com.example.demo.utils.GoogleNearByPlaceApi;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Comparator;
 import java.util.List;
 
 @RestController
 public class MainPageApiController {
 
-    private final MainPageService mainPageService;
+	private final MainPageService mainPageService;
+	private final GoogleNearByPlaceApi googleNearByPlaceApi;
 
-    @Autowired
-    public MainPageApiController(MainPageService mainPageService) {
-        this.mainPageService = mainPageService;
+	@Autowired
+	public MainPageApiController(MainPageService mainPageService, GoogleNearByPlaceApi googleNearByPlaceApi) {
+		this.mainPageService = mainPageService;
+		this.googleNearByPlaceApi = googleNearByPlaceApi;
+	}
+
+    @GetMapping("/page/{pageNumber}")
+    public List<Restaurant> getNearbyRestaurants(@RequestParam(name = "sortBy", defaultValue = "rating") String sortBy,
+                                                  @RequestParam(name = "pageNumber", defaultValue = "1") int pageNumber) {
+        try {
+            // GoogleNearByPlaceApi를 사용해 데이터 가져오기 및 정렬
+            List<Restaurant> allRestaurants = googleNearByPlaceApi.fetchAllNearbyRestaurants(null, sortBy);
+            // 페이징 처리
+            return getPagedRestaurants(allRestaurants, pageNumber, 12);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("서버 내부 오류가 발생했습니다.", e);
+        }
     }
 
-    @GetMapping("/api/restaurants/{pageNumber}")
-    public ApiResponse<List<Restaurant>> getRestaurantsApi(@PathVariable("pageNumber") int pageNumber) {
-        int size = 12;
-
-        List<Restaurant> allRestaurants = mainPageService.getNearbyRestaurants();
+    private List<Restaurant> getPagedRestaurants(List<Restaurant> allRestaurants, int pageNumber, int size) {
         int totalRestaurants = allRestaurants.size();
-        PagingBtn pagingBtn = new PagingBtn(totalRestaurants, pageNumber);
-        int start = (pageNumber - 1) * size;
-        int end = Math.min(start + size - 1, totalRestaurants);
-        List<Restaurant> restaurants = allRestaurants.subList(start, end);
+        int startIdx = (pageNumber - 1) * size;
+        int endIdx = Math.min(startIdx + size, totalRestaurants);
 
-        return new ApiResponse<>(ResponseStatus.SUCCESS, restaurants);
-    }
-
-    @GetMapping("/restaurants")
-    public List<Restaurant> getNearbyRestaurants(
-            @RequestParam(defaultValue = "rating") String sortBy) {
-
-        System.out.println(sortBy + "-------------------------");
-
-        // 음식점 목록을 가져온다.
-        List<Restaurant> restaurants = mainPageService.getNearbyRestaurants();
-
-        // 음식점 목록을 정렬 (기본값은 'rating'으로 설정됨)
-        switch (sortBy) {
-            case "rating":
-                restaurants.sort(Comparator.comparing(Restaurant::getRating).reversed()); // 별점 기준 내림차순
-                break;
-            case "reviewCount":
-                restaurants.sort(Comparator.comparingInt(Restaurant::getReviewCount).reversed()); // 리뷰 수 기준 내림차순
-                break;
-            case "distance":
-                restaurants.sort(Comparator.comparingDouble(Restaurant::getDistance)); // 거리 기준 오름차순
-                break;
-            default:
-                // 기본값은 rating 기준으로 내림차순 정렬
-                restaurants.sort(Comparator.comparing(Restaurant::getRating).reversed());
-                break;
+        if (startIdx >= totalRestaurants) {
+            return List.of();
         }
 
-        return restaurants;  // 정렬된 리스트 반환
+        // 정렬된 데이터에서 페이징된 부분만 반환
+        return allRestaurants.subList(startIdx, endIdx);
     }
 }

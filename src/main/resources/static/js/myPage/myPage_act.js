@@ -10,7 +10,7 @@ function extractKoreanAddress(address) {
 function getPhoto(photos) {
     let returnHtml = ''
     const maxPhoto = 8; // 몇 개 보여줄건지
-    for (let i = 0; i < photos.length; i++) {
+    for (let i = 0; i < photos?.length; i++) {
         if (i === maxPhoto) break;
         let src = "https://maps.googleapis.com/maps/api/place/photo?photoreference=" + photos[i].photo_reference + "&key=AIzaSyDv0yF-dMGzUxSlJojgLQyWZ4xudsAUX2g&maxheight=200&maxwidth=200";
         returnHtml += '<img src="' + src + '">';

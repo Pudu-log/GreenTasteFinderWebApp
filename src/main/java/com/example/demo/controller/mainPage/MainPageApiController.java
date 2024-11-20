@@ -5,48 +5,38 @@ import com.example.demo.service.MainPageService;
 import com.example.demo.utils.GoogleNearByPlaceApi;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
+@RequestMapping("/api/restaurants")
 public class MainPageApiController {
 
-	private final MainPageService mainPageService;
-	private final GoogleNearByPlaceApi googleNearByPlaceApi;
+    private final MainPageService mainPageService;
 
-	@Autowired
-	public MainPageApiController(MainPageService mainPageService, GoogleNearByPlaceApi googleNearByPlaceApi) {
-		this.mainPageService = mainPageService;
-		this.googleNearByPlaceApi = googleNearByPlaceApi;
-	}
-
-    @GetMapping("/page/{pageNumber}")
-    public List<Restaurant> getNearbyRestaurants(@RequestParam(name = "sortBy", defaultValue = "rating") String sortBy,
-                                                  @RequestParam(name = "pageNumber", defaultValue = "1") int pageNumber) {
-        try {
-            // GoogleNearByPlaceApi를 사용해 데이터 가져오기 및 정렬
-            List<Restaurant> allRestaurants = googleNearByPlaceApi.fetchAllNearbyRestaurants(null, sortBy);
-            // 페이징 처리
-            return getPagedRestaurants(allRestaurants, pageNumber, 12);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("서버 내부 오류가 발생했습니다.", e);
-        }
+    public MainPageApiController(MainPageService mainPageService) {
+        this.mainPageService = mainPageService;
     }
 
-    private List<Restaurant> getPagedRestaurants(List<Restaurant> allRestaurants, int pageNumber, int size) {
-        int totalRestaurants = allRestaurants.size();
-        int startIdx = (pageNumber - 1) * size;
-        int endIdx = Math.min(startIdx + size, totalRestaurants);
+    // JSON으로 초기 데이터 반환
+    @GetMapping
+    public ResponseEntity<List<Restaurant>> getInitialRestaurants(@RequestParam String keyword) {
+        List<Restaurant> restaurants = mainPageService.fetchInitialRestaurants(keyword);
+        return ResponseEntity.ok(restaurants);
+    }
 
-        if (startIdx >= totalRestaurants) {
-            return List.of();
-        }
-
-        // 정렬된 데이터에서 페이징된 부분만 반환
-        return allRestaurants.subList(startIdx, endIdx);
+    // 모든 데이터를 비동기로 반환
+    @GetMapping("/all")
+    public CompletableFuture<ResponseEntity<List<Restaurant>>> getAllRestaurants(
+            @RequestParam(name = "keyword", defaultValue = "restaurant") String keyword) {
+        return mainPageService.fetchAllRestaurants(keyword)
+                .thenApply(ResponseEntity::ok);
     }
 }
+

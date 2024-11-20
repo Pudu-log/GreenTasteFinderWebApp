@@ -1,191 +1,191 @@
 package com.example.demo.utils;
-
 import com.example.demo.model.Restaurant;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-/**
- * 구 경림
- *
- * 이 클래스는 Google Places API를 사용하여 주변 음식점 데이터를 가져오는 유틸리티 컴포넌트입니다.
- * 
- * 
- * 1. Google Places API를 호출하여 주변 음식점을 검색 2. 상세 정보(전화번호, 영업시간 등)를 추가로 가져오기 위해
- * Place Details API 호출 3. 검색 결과를 정렬(평점, 리뷰 수, 거리 등 기준)하여 반환 4. API 호출 결과를 캐시에
- * 저장하여 반복 호출 최소화
- * 
- */
 @Component
 public class GoogleNearByPlaceApi {
-	
-	@Value("${google.api.key}")
-	private String API_KEY;
 
-	private final RestTemplate restTemplate;
-	private final ObjectMapper objectMapper;
-	private final MainPageRestaurantMapper mainPageRestaurantMapper;
+    @Value("${google.api.key}")
+    private String API_KEY;
 
-	private final Map<String, List<Restaurant>> cachedResults = new ConcurrentHashMap<>();
+    private final RestTemplate restTemplate;
+    private final ObjectMapper objectMapper;
+    private final Executor asyncExecutor = Executors.newFixedThreadPool(5); // 비동기 처리용 스레드풀
+    private static final int DEFAULT_RADIUS = 1000; // 1km
+    private static final String BASE_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json";
+    private static final String FIELDS = "name,geometry,place_id,rating,user_ratings_total,photos,vicinity,opening_hours,price_level,formatted_phone_number";
+    private static final String LANGUAGE = "ko"; // 한국어
 
-	private static final int PHOTO_MAX_WIDTH = 300;
-	private static final int DEFAULT_RADIUS = 1000; //1km
-	private static final double FIXED_LATITUDE = 35.159707;
-	private static final double FIXED_LONGITUDE = 129.060186;
-	private static final String PLACES_API_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json";
-	private static final String PLACES_DETAIL_API_URL = "https://maps.googleapis.com/maps/api/place/details/json";
-	private static final String DEFAULT_TYPE = "restaurant";
+    public GoogleNearByPlaceApi(RestTemplate restTemplate, ObjectMapper objectMapper) {
+        this.restTemplate = restTemplate;
+        this.objectMapper = objectMapper;
+    }
 
-	private String nextPageToken;
-	
-	public GoogleNearByPlaceApi(RestTemplate restTemplate, ObjectMapper objectMapper,
-			MainPageRestaurantMapper mainPageRestaurantMapper) {
-		this.restTemplate = restTemplate;
-		this.objectMapper = objectMapper;
-		this.mainPageRestaurantMapper = mainPageRestaurantMapper;
-	}
-	
-	//주변 음식점을 검색어와 정렬 기준에 따라 조회하고 캐시에 저장.
-	public List<Restaurant> fetchAllNearbyRestaurants(String keyword, String sortBy) {
-		String cacheKey = (keyword == null ? "all" : keyword) + "_" + sortBy;
+    // 첫 번째 페이지 데이터 가져오기
+    public List<Restaurant> fetchInitialNearbyRestaurants(String keyword) {
+        PageData pageData = fetchRestaurantsByPage(keyword, null);
+        return pageData.getRestaurants();
+    }
 
-		// 캐시에 데이터가 있는지 확인
-		if (cachedResults.containsKey(cacheKey)) {
-			return cachedResults.get(cacheKey);
-		}
+    // 백그라운드에서 나머지 페이지 데이터 로드
+    @Async
+    public CompletableFuture<List<Restaurant>> fetchAllPagesAsync(String keyword) {
+        List<Restaurant> allRestaurants = new ArrayList<>();
+        String nextPageToken = null;
 
-		List<Restaurant> restaurants = new ArrayList<>();
-		String pageToken = null;
+        try {
+            while (true) {
+                PageData pageData = fetchRestaurantsByPage(keyword, nextPageToken);
+                allRestaurants.addAll(pageData.getRestaurants());
+                nextPageToken = pageData.getNextPageToken();
 
-		do {
-			// 데이터 받아오기 (검색어 필터링 추가)
-			List<JsonNode> placeData = getLocationBasedData(DEFAULT_TYPE, pageToken, keyword);
+                // 더 이상 페이지가 없으면 중단
+                if (nextPageToken == null) {
+                    break;
+                }
 
-			if (placeData != null && !placeData.isEmpty()) {
-				placeData.forEach(node -> {
-					Restaurant restaurant = mainPageRestaurantMapper.mapJsonToRestaurant(node);
-					// 상세 정보 가져오기 (전화번호, 영업시간 등)
-					getPlaceDetails(restaurant);
-					restaurants.add(restaurant);
-				});
-			}
+                // Google Places API의 next_page_token 활성화를 기다림 (최대 2초)
+                Thread.sleep(2000);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-			// 다음 페이지 토큰을 추출
-			pageToken = nextPageToken;
+        return CompletableFuture.completedFuture(allRestaurants);
+    }
 
-		} while (pageToken != null && !pageToken.isEmpty()); // 페이지 토큰이 존재하면 계속해서 추가 데이터 요청
+    // 페이지 데이터 가져오기
+    private PageData fetchRestaurantsByPage(String keyword, String nextPageToken) {
+        try {
+            String url = buildUrl(keyword, nextPageToken);
+            String response = restTemplate.getForObject(url, String.class);
+            JsonNode root = objectMapper.readTree(response);
+            JsonNode results = root.path("results");
 
-		// 정렬 기준에 맞게 음식점 리스트 정렬
-		List<Restaurant> sortedRestaurants = sortRestaurants(restaurants, sortBy);
-		// 캐시에 저장
-		cachedResults.put(cacheKey, sortedRestaurants);
+            List<Restaurant> restaurantList = new ArrayList<>();
+            if (results.isArray()) {
+                for (JsonNode node : results) {
+                    CompletableFuture<Restaurant> future = fetchRestaurantDetails(node);
+                    Restaurant restaurant = future.join();
+                    if (restaurant != null) {
+                        restaurantList.add(restaurant);
+                    }
+                }
+            }
 
-		return sortedRestaurants;
-	}
+            String token = root.path("next_page_token").asText(null);
+            return new PageData(restaurantList, token);
 
-	//정렬 및 음식점 리스트 반환
-	public List<Restaurant> sortRestaurants(List<Restaurant> restaurants, String sortBy) {
-	    if (restaurants == null || restaurants.isEmpty()) {
-	        return restaurants; // 음식점 리스트가 없으면 그대로 반환
-	    }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new PageData(new ArrayList<>(), null);
+        }
+    }
 
-	    switch (sortBy) {
-	        case "rating":
-	            // 평점 기준으로 내림차순 정렬
-	            return restaurants.stream()
-	                    .sorted(Comparator.comparingDouble(Restaurant::getRating).reversed())
-	                    .collect(Collectors.toList());
-	        case "reviewCount":
-	            // 리뷰 수 기준으로 내림차순 정렬
-	            return restaurants.stream()
-	                    .sorted(Comparator.comparingInt(Restaurant::getReviewCount).reversed())
-	                    .collect(Collectors.toList());
-	        case "distance":
-	            // 거리 기준으로 오름차순 정렬
-	            return restaurants.stream()
-	                    .sorted(Comparator.comparingDouble(Restaurant::getDistance))
-	                    .collect(Collectors.toList());
-	        default:
-	            // 기본값은 평점 기준으로 내림차순 정렬
-	            return restaurants.stream()
-	                    .sorted(Comparator.comparingDouble(Restaurant::getRating).reversed())
-	                    .collect(Collectors.toList());
-	    }
-	}
+    // 병렬로 상세 정보 가져오기
+    private CompletableFuture<Restaurant> fetchRestaurantDetails(JsonNode node) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                Restaurant restaurant = new Restaurant();
+                restaurant.setName(node.path("name").asText());
+                restaurant.setPlaceId(node.path("place_id").asText());
+                restaurant.setRating(node.path("rating").asDouble(0.0));
+                restaurant.setReviewCount(node.path("user_ratings_total").asInt(0));
+                restaurant.setAddress(node.path("vicinity").asText());
+                restaurant.setPhoneNumber(node.path("formatted_phone_number").asText(null)); // 전화번호
+                restaurant.setPriceLevel(node.path("price_level").asInt(-1)); // 가격 정보
+                restaurant.setOpenNow(node.path("opening_hours").path("open_now").asBoolean(false)); // 운영 상태
 
-	// Google Place Details API를 호출하여 상세 정보를 가져오는 메서드
-	public void getPlaceDetails(Restaurant restaurant) {
-		String placeDetailsUrl = UriComponentsBuilder.fromHttpUrl(PLACES_DETAIL_API_URL)
-				.queryParam("place_id", restaurant.getPlaceId())
-				.queryParam("fields", "formatted_phone_number,opening_hours/weekday_text").queryParam("key", API_KEY)
-				.toUriString();
+                // 사진 URL 설정
+                if (node.has("photos")) {
+                    String photoReference = node.path("photos").get(0).path("photo_reference").asText();
+                    restaurant.setPhotoUrl(buildPhotoUrl(photoReference));
+                }
 
-		try {
-			String response = restTemplate.getForObject(placeDetailsUrl, String.class);
-			JsonNode root = objectMapper.readTree(response);
-			JsonNode result = root.path("result");
+                // 거리 계산 (geometry.location 사용)
+                double restaurantLat = node.path("geometry").path("location").path("lat").asDouble();
+                double restaurantLng = node.path("geometry").path("location").path("lng").asDouble();
+                restaurant.setDistance(calculateDistance(35.159707, 129.060186, restaurantLat, restaurantLng));
 
-			if (result.has("formatted_phone_number")) {
-				restaurant.setPhoneNumber(result.path("formatted_phone_number").asText());
-			}
+                return restaurant;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }, asyncExecutor);
+    }
 
-			if (result.has("opening_hours")) {
-				JsonNode openingHoursNode = result.path("opening_hours");
+    
+    private String buildPhotoUrl(String photoReference) {
+        return String.format(
+            "https://maps.googleapis.com/maps/api/place/photo?maxwidth=300&photoreference=%s&key=%s",
+            photoReference, API_KEY
+        );
+    }
 
-				if (openingHoursNode.has("open_now")) {
-					restaurant.setOpenNow(openingHoursNode.path("open_now").asBoolean());
-				}
 
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	// 위치, 반경, 키워드, 페이지 토큰 등을 이용해 Google Places API 호출
-	public List<JsonNode> getLocationBasedData(String type, String pageToken, String keyword) {
-	    List<JsonNode> placeData = new ArrayList<>();
-	    try {
-	        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(PLACES_API_URL)
-	                .queryParam("location", FIXED_LATITUDE + "," + FIXED_LONGITUDE)  // 고정된 위도와 경도
-	                .queryParam("radius", DEFAULT_RADIUS)  // 기본 반경 설정 (1000m)
-	                .queryParam("type", type)  // 장소 유형 (예: restaurant)
-	                .queryParam("keyword", keyword)  // 키워드로 필터링 (선택사항)
-	                .queryParam("key", API_KEY);  // Google API Key
-	        
-	        // 페이지 토큰이 있는 경우 추가
-	        if (pageToken != null && !pageToken.isEmpty()) {
-	            uriBuilder.queryParam("pagetoken", pageToken);
-	        }
+    // URL 생성 메서드
+    private String buildUrl(String keyword, String nextPageToken) {
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(BASE_URL)
+                .queryParam("location", "35.159707,129.060186")
+                .queryParam("radius", DEFAULT_RADIUS)
+                .queryParam("type", "restaurant")
+                .queryParam("language", LANGUAGE)
+                .queryParam("fields", FIELDS)
+                .queryParam("key", API_KEY);
 
-	        // API 호출
-	        String response = restTemplate.getForObject(uriBuilder.toUriString(), String.class);
-	        JsonNode rootNode = objectMapper.readTree(response);
+        if (keyword != null) {
+            builder.queryParam("keyword", keyword);
+        }
+        if (nextPageToken != null) {
+            builder.queryParam("pagetoken", nextPageToken);
+        }
 
-	        // 결과 리스트 추출
-	        JsonNode results = rootNode.path("results");
-	        if (results.isArray()) {
-	            results.forEach(placeData::add);
-	        }
+        return builder.toUriString();
+    }
+    
+    private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+        final int EARTH_RADIUS = 6371000; // 지구 반지름 (단위: m)
+        double latDistance = Math.toRadians(lat2 - lat1);
+        double lonDistance = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return EARTH_RADIUS * c; // 거리 반환 (미터 단위)
+    }
 
-	        // 페이지 토큰 처리
-	        nextPageToken = rootNode.path("next_page_token").asText(null);  // 다음 페이지 토큰 저장
 
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    }
-	    
-	    return placeData;
-	}
+    // 내부 클래스: 페이지 데이터
+    private static class PageData {
+        private final List<Restaurant> restaurants;
+        private final String nextPageToken;
 
+        public PageData(List<Restaurant> restaurants, String nextPageToken) {
+            this.restaurants = restaurants;
+            this.nextPageToken = nextPageToken;
+        }
+
+        public List<Restaurant> getRestaurants() {
+            return restaurants;
+        }
+
+        public String getNextPageToken() {
+            return nextPageToken;
+        }
+    }
 }

@@ -1,18 +1,15 @@
-// 좋아요 토글
-function toggleLike(button) {
-	button.classList.toggle('liked');
-}
-
-// 즐겨찾기 토글
-function toggleFavorite(button) {
-	button.classList.toggle('favorited');
-}
-
 // 페이지 로드 시 데이터 가져오기
 window.onload = function() {
   fetchAllRestaurants();
 };
-
+// 좋아요 토글
+function toggleLike(button) {
+	button.classList.toggle('liked');
+}
+// 즐겨찾기 토글
+function toggleFavorite(button) {
+	button.classList.toggle('favorited');
+}
 async function fetchAllRestaurants() {
   try {
     // 비동기로 서버에서 음식점 리스트 가져오기

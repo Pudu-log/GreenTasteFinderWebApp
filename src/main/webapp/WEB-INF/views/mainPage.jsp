@@ -5,7 +5,6 @@
 <!-- 
 작성자: 구경림
 작성일: 2024.11.20
-작성이유: 
  -->
 <!DOCTYPE html>
 <html lang="ko">
@@ -52,7 +51,7 @@
             <div id="memberInfo">
                 <p>
                     <span style="font-size: 12px">
-                        <%= memberId %>
+                        <%= memberId %>님,
                     </span>
                     <br>오늘의 식사는 무엇인가요?
                 </p>

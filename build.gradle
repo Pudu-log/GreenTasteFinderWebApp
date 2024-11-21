@@ -41,7 +41,7 @@ dependencies {
 	
 	//11.15 - 롬복 어노테이션 라이브러리추가 - 경
 	annotationProcessor 'org.projectlombok:lombok'
-	
+
 }
 
 tasks.named('test') {

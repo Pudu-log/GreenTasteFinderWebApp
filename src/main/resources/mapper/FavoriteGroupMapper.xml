@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.dao.IFavoriteGroupDao">
+    <select id="getFavoriteGroup" resultType="string">
+        SELECT A.store_id
+        FROM (SELECT * FROM tbl_user
+        WHERE room_code = (SELECT room_code FROM tbl_user WHERE id = #{id})) M
+        INNER JOIN tbl_act A
+        ON M.id = A.id
+        WHERE A.gubn = #{gubn} LIMIT #{limit} OFFSET #{offset}
+    </select>
+</mapper>

@@ -54,6 +54,7 @@ public class GooglePlaceApi {
         try {
 
             String url = UriComponentsBuilder.fromHttpUrl(URL)
+                    .queryParam("language","ko")
                     .queryParam("place_id", place_key)
                     .queryParam("key", API_KEY)
                     .build()

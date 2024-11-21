@@ -1,0 +1,126 @@
+body{
+    margin-top: 100px;
+    font-family: Arial, sans-serif;
+    line-height: 1.6
+}
+.container{
+    width: 800px;
+    margin: 0 auto 20px;
+}
+
+.title-container{
+    text-align: center;
+    width: 300px;
+    margin: 50px auto;
+}
+
+.title-container h2{
+    font-size: 30px;
+}
+
+.title-container ul{
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.button-container{
+    width: 300px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+}
+
+/* 버튼 스타일 적용 */
+.action-button{
+    background-color: #616161;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    margin-left: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.action-button:hover {
+    background-color: #45a049;
+}
+
+.action-button.active {
+    background-color: #4CAF50;
+
+    color: white;
+}
+
+/* 좋아요 갯수 표시 스타일 */
+.count {
+    font-size: 14px;
+    color: #fff;
+    background-color: #f44336;
+    border-radius: 50%;
+    padding: 3px 8px;
+    margin-left: 8px;
+    font-weight: bold;
+}
+
+#googleMap{
+    margin: 50px auto;
+    width: 70%;
+    height: 700px;
+}
+
+ul.tabs{
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+}
+ul.tabs li{
+    background: none;
+    color: #222;
+    display: inline-block;
+    padding: 10px 15px;
+    cursor: pointer;
+}
+
+ul.tabs li.current{
+    background: #ededed;
+    color: #222;
+}
+
+.tab-content{
+    display: none;
+    background: #ededed;
+    padding: 15px;
+    min-height: 500px;
+}
+
+.tab-content.current{
+    display: inherit;
+}
+/* 리뷰 항목 스타일 */
+.tab-item {
+    background-color: #ffffff;
+    margin-bottom: 10px;
+    padding: 15px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+/* 텍스트 스타일 */
+.tab-item p {
+    margin: 0;
+    font-size: 14px;
+    color: #333;
+}
+
+/* 날짜 텍스트 스타일 */
+.tab-item p:nth-of-type(2) {
+    font-size: 12px;
+    color: #555;
+}

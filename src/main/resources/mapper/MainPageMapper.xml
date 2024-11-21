@@ -8,7 +8,18 @@
     <!-- 좋아요/즐겨찾기 추가 -->
     <insert id="insertAct">
         INSERT INTO tbl_act (id, store_id, act_dt, gubn)
-        VALUES (#{id}, #{storeId}, NOW(), #{gubn})
+        VALUES (#{memberId}, #{storeId}, NOW(), #{gubn})
     </insert>
 
+    <!-- 좋아요/즐겨찾기 삭제 -->
+    <delete id="deleteAct">
+        DELETE FROM tbl_act WHERE id = #{memberId} AND store_id = #{storeId} AND gubn = #{gubn}
+    </delete>
+
+    <!-- 사용자가 좋아요/즐겨찾기한 가게 조회 -->
+    <select id="findUserActions" resultType="string">
+        SELECT store_id
+        FROM tbl_act
+        WHERE id = #{memberId} AND gubn = #{gubn}
+    </select>
 </mapper>

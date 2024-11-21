@@ -8,6 +8,17 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+/*
+작성자: 구경림  
+작성일: 2024.11.20  
+작성이유:  
+1. Google Places API 응답 데이터를 `Restaurant` 객체로 변환하여 재사용성을 높임.  
+2. 공통된 데이터 추출 로직을 모듈화하여 유지보수성을 강화.  
+
+리팩토링 포인트:  
+- 거리 계산 로직과 JSON 추출 메서드를 별도 유틸 클래스로 이동(예: `DistanceUtil`, `JsonNodeUtil`).  
+- 사진 URL 생성 로직(`getPhotoUrl`)을 독립적인 서비스로 관리하여 확장 가능성 확보.  
+*/
 
 @Component
 public class MainPageRestaurantMapper {

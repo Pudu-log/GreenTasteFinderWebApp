@@ -1,142 +1,203 @@
 @charset "UTF-8";
-		body {
-			margin: 0 auto;
-		}
 
-		#container {
-			margin-top: 100px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			flex-direction: column;
-		}
+/* 공통 스타일 */
+body {
+    margin: 0 auto;
+}
 
-		#restaurantList {
-			display: grid;
-			grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-			gap: 30px;
-			padding: 20px;
-			max-width: 900px;
-			margin: 0 auto;
-		}
+#container {
+    margin-top: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
 
-		.restaurant {
-			background-color: white;
-			border-radius: 2px;
-			display: flex;
-			flex-direction: column;
-			justify-content: space-between;
-			overflow: hidden;
-		}
+#restaurantList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 30px;
+    padding: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+}
 
-		.restaurant img,
-		.no-image {
-			width: 100%;
-			height: 150px;
-			object-fit: cover;
-			border-bottom: 1px solid #ddd;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			font-size: 0.9rem;
-			color: #666;
-			background-color: #f0f0f0;
-		}
+.restaurant {
+    background-color: white;
+    border-radius: 2px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+}
 
-		.no-image {
-			font-size: 0.8em;
-			color: #999;
-			text-align: center;
-		}
+.restaurant img,
+.no-image {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    color: #666;
+    background-color: #f0f0f0;
+}
 
-		.restaurant-content {
-			padding: 10px;
-			text-align: center;
-		}
+.no-image {
+    font-size: 0.8em;
+    color: #999;
+    text-align: center;
+}
 
-		.restaurant h4 {
-			font-size: 1em;
-			margin: 10px 0;
-			color: #333;
-		}
+.restaurant-content {
+    padding: 10px;
+    text-align: center;
+}
 
-		.restaurant p {
-			margin: 5px 0;
-			font-size: 0.9em;
-			color: #666;
-		}
+.restaurant h4 {
+    font-size: 1em;
+    margin: 10px 0;
+    color: #333;
+}
 
-		.details {
-			display: flex;
-			justify-content: space-around;
-			align-items: center;
-			margin-top: 10px;
-		}
+.restaurant p {
+    margin: 5px 0;
+    font-size: 0.9em;
+    color: #666;
+}
 
-		.details div {
-			text-align: center;
-			font-size: 0.8em;
-		}
+.details {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 10px;
+}
 
-		.actions {
-			display: flex;
-			justify-content: space-around;
-			padding: 10px;
-		}
+.details div {
+    text-align: center;
+    font-size: 0.8em;
+}
 
-		.action-btn {
-			cursor: pointer;
-			display: flex;
-			align-items: center;
-			font-size: 0.8em;
-			transition: color 0.3s, transform 0.3s;
-		}
+.actions {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+}
 
-		.action-btn svg {
-			width: 16px;
-			height: 16px;
-			margin-right: 5px;
-		}
+.action-btn {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-size: 0.8em;
+    transition: color 0.3s, transform 0.3s;
+}
 
-		.liked svg {
-			fill: red;
-		}
+.action-btn svg {
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
+}
 
-		.favorited svg {
-			fill: gold;
-		}
+.liked svg {
+    fill: red;
+}
 
-		.pagination {
-			text-align: center;
-			font-size: 0.6rem;
-			margin: 10px 0;
-		}
+.favorited svg {
+    fill: gold;
+}
 
-		.pagination a,
-		.pagination span {
-			display: inline-block;
-			margin: 0 5px;
-			padding: 3px 6px;
-			text-decoration: none;
-			color: #333;
-			border: 1px solid #ddd;
-			border-radius: 4px;
-		}
+.pagination {
+    text-align: center;
+    font-size: 0.6rem;
+    margin: 10px 0;
+}
 
-		.pagination a:hover {
-			background-color: #f0f0f0;
-		}
+.pagination a,
+.pagination span {
+    display: inline-block;
+    margin: 0 5px;
+    padding: 3px 6px;
+    text-decoration: none;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
 
-		.pagination .current-page {
-			font-weight: bold;
-			color: white;
-			background-color: #7e8ca0;
-			border-color: #818481;
-		}
+.pagination a:hover {
+    background-color: #f0f0f0;
+}
 
-		#filerAndSerchBox {
-			display: flex;
-			flex-direction: column;
-			justify-content: center;
-			align-items: center;
-		}
+.pagination .current-page {
+    font-weight: bold;
+    color: white;
+    background-color: #7e8ca0;
+    border-color: #818481;
+}
+
+#filerAndSerchBox {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 모달 기본 스타일 */
+.loading-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* 배경 흐림 효과 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* 최상단 */
+    display: none; /* 초기에는 숨김 */
+}
+
+/* 로딩 콘텐츠 */
+.loading-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
+    font-size: 1.2em;
+}
+
+/* 스피너 애니메이션 */
+.spinner {
+    margin: 10px auto;
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-top: 4px solid #3498db; /* 스피너 색상 */
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* 흐림 효과 */
+.blur {
+    filter: blur(5px); /* 흐림 효과 */
+    pointer-events: none; /* 클릭 방지 */
+}
+#memberInfo {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+
+
+

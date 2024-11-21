@@ -8,6 +8,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+/*
+작성자: 구경림  
+작성일: 2024.11.20  
+작성이유:  
+1. 캐싱을 통해 서버 부담을 줄이고 데이터 접근 속도를 향상.  
+2. 자주 사용되는 음식점 데이터를 메모리에서 관리.  
+
+리팩토링 포인트:  
+- 캐시 무효화 정책 추가 필요(예: TTL 기반 만료 설정).  
+- 캐시의 동기화 문제를 방지하기 위해 thread-safe한 접근 방식 검토.  
+- 특정 키워드별 캐시 공간 과도 사용 방지를 위한 메모리 관리 로직 필요.  
+*/
 
 @Component
 public class MainPageRestaurantCache {

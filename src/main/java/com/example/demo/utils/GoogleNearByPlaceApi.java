@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -15,7 +17,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
-
+/* 
+작성자: 구경림
+작성일: 2024.11.20
+Google Places API를 호출하여 음식점 데이터를 수집하고 가공하기 위한 유틸리티 클래스.
+비동기 데이터 처리를 통해 초기 로딩 시간을 줄이고 전체 데이터를 병렬로 가져오기 위함.
+위치 기반 거리 계산 및 Google API 응답 데이터를 모델 객체로 변환하여 데이터 가공.
+*/
 @Component
 public class GoogleNearByPlaceApi {
 
@@ -149,7 +157,7 @@ public class GoogleNearByPlaceApi {
                 .queryParam("key", API_KEY);
 
         if (keyword != null) {
-            builder.queryParam("keyword", keyword);
+            builder.queryParam("keyword", URLEncoder.encode(keyword, StandardCharsets.UTF_8));
         }
         if (nextPageToken != null) {
             builder.queryParam("pagetoken", nextPageToken);

@@ -1,87 +1,80 @@
 package com.example.demo.service;
 
+import com.example.demo.dao.mainpage.IMainPageDao;
 import com.example.demo.model.Restaurant;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import com.example.demo.utils.GoogleNearByPlaceApi;
+import com.example.demo.utils.MainPageRestaurantCache;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class MainPageService {
 
-    @Value("${google.api.key}")
-    private String apiKey;
+    private final GoogleNearByPlaceApi googleNearByPlaceApi;
+    private final MainPageRestaurantCache restaurantCache;
+    private final IMainPageDao mainPageDao;
 
-    private static final String PLACES_API_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json";
-
-    private final RestTemplate restTemplate;
-    private final ObjectMapper objectMapper;
-
-    public MainPageService(RestTemplate restTemplate, ObjectMapper objectMapper) {
-        this.restTemplate = restTemplate;
-        this.objectMapper = objectMapper;
+    public MainPageService(GoogleNearByPlaceApi googleNearByPlaceApi,
+                           MainPageRestaurantCache restaurantCache,
+                           IMainPageDao mainPageDao) {
+        this.googleNearByPlaceApi = googleNearByPlaceApi;
+        this.restaurantCache = restaurantCache;
+        this.mainPageDao = mainPageDao;
     }
 
-    public List<Restaurant> getNearbyRestaurants(double latitude, double longitude) {
-        List<Restaurant> restaurants = new ArrayList<>();
-        String url = String.format("%s?location=%f,%f&radius=1000&type=restaurant&key=%s",
-                PLACES_API_URL, latitude, longitude, apiKey);
-
-        try {
-            String response = restTemplate.getForObject(url, String.class);
-            JsonNode root = objectMapper.readTree(response);
-            JsonNode results = root.path("results");
-
-            for (JsonNode node : results) {
-                Restaurant restaurant = parseRestaurantFromJson(node);
-                double restaurantLat = node.path("geometry").path("location").path("lat").asDouble();
-                double restaurantLng = node.path("geometry").path("location").path("lng").asDouble();
-                double distance = calculateDistance(latitude, longitude, restaurantLat, restaurantLng);
-                restaurant.setDistance(distance);
-                restaurants.add(restaurant);
-            }
-
-            restaurants.sort(Comparator.comparingDouble(Restaurant::getDistance));
-            // 별점 정렬은 여전히 활성화되지 않음
-            // restaurants.sort(Comparator.comparingDouble(Restaurant::getRating).reversed());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return restaurants;
+    /**
+     * 초기 데이터를 가져옵니다. 캐시에 데이터가 있으면 반환, 없으면 Google API에서 로드 후 캐시에 저장.
+     *
+     * @param keyword 검색 키워드
+     * @return 초기 레스토랑 데이터 리스트
+     */
+    public List<Restaurant> fetchInitialRestaurants(String keyword) {
+        return restaurantCache.getCachedRestaurants(keyword).orElseGet(() -> {
+            List<Restaurant> restaurants = googleNearByPlaceApi.fetchInitialNearbyRestaurants(keyword);
+            restaurantCache.cacheRestaurants(keyword, restaurants);
+            return restaurants;
+        });
     }
 
-    private Restaurant parseRestaurantFromJson(JsonNode node) {
-        Restaurant restaurant = new Restaurant();
-        restaurant.setName(node.path("name").asText());
-        restaurant.setRating(node.path("rating").asDouble());
-        restaurant.setAddress(node.path("vicinity").asText());
-
-        if (node.has("photos")) {
-            String photoReference = node.path("photos").get(0).path("photo_reference").asText();
-            String photoUrl = String.format("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=%s&key=%s",
-                    photoReference, apiKey);
-            restaurant.setPhotoUrl(photoUrl);
-        }
-
-        restaurant.setDistance(1.0);
-        return restaurant;
+    /**
+     * 모든 레스토랑 데이터를 비동기로 로드합니다.
+     *
+     * @param keyword 검색 키워드
+     * @return CompletableFuture로 모든 레스토랑 데이터 반환
+     */
+    @Async
+    public CompletableFuture<List<Restaurant>> fetchAllRestaurants(String keyword) {
+        return googleNearByPlaceApi.fetchAllPagesAsync(keyword)
+                .thenApply(restaurants -> {
+                    if (restaurants.isEmpty()) {
+                        System.out.println("음식점 데이터가 비어 있습니다.");
+                    }
+                    restaurantCache.cacheRestaurants("restaurant", restaurants);
+                    return restaurants;
+                })
+                .thenApply(restaurants -> {
+                    // 사용자의 좋아요/즐겨찾기 상태 업데이트 (서비스 레이어에서 수행)
+                    // 필요한 경우 memberId는 서비스 레이어에 추가적으로 전달받아야 함
+                    return restaurants;
+                });
     }
 
-    private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
-        final int EARTH_RADIUS = 6371;
+    // 사용자의 좋아요/즐겨찾기한 가게 목록 가져오기
+    public List<String> getUserActions(String memberId, String gubn) {
+        return mainPageDao.findUserActions(memberId, gubn);
+    }
 
-        double latDistance = Math.toRadians(lat2 - lat1);
-        double lonDistance = Math.toRadians(lon2 - lon1);
-        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
-                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
-                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return EARTH_RADIUS * c;
+    // 좋아요/즐겨찾기 추가
+    public void addUserAction(String memberId, String storeId, String gubn) {
+        mainPageDao.insertAct(memberId, storeId, gubn);
+    }
+
+    // 좋아요/즐겨찾기 삭제
+    public void removeUserAction(String memberId, String storeId, String gubn) {
+        mainPageDao.deleteAct(memberId, storeId, gubn);
     }
 }

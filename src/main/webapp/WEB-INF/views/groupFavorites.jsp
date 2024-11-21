@@ -4,13 +4,13 @@
     <title>같은반 선택 목록</title>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="/static/css/groupFavorites.css"/>
 </head>
 <body>
 <jsp:include page="layout/header.jsp"/>
 <jsp:include page="layout/nav.jsp"/>
 <div class="container">
-    <div class="item-list">
-    </div>
+    <div class="item-list"></div>
     <button id="more-list">더보기</button>
 </div>
 <jsp:include page="layout/footer.jsp"/>
@@ -31,12 +31,18 @@
                 if (response.data.length !== 0  && response.status === 200) {
                     let html = '';
                     response.data.forEach((item) => {
-                        html += '<div class="item-elements" style="border: 1px solid black;">';
+                        console.log(item.photos.get(0))
+                        html += '<div class="item-elements">';
                         html += '<div class="item-name">' + item.name + '</div>';
                         html += '<div class="item-address">' + item.formatted_address + '</div>';
                         html += '<div class="item-phone-number">' + item.formatted_phone_number + '</div>';
-                        html += item.hasOwnProperty('rating')?'<div class="item-rating">' + item.rating + '</div>':'<div class="item-rating">리뷰 없음</div>';
+                        html += item.hasOwnProperty('rating')?'<div class="item-rating">' + item.rating + '/5</div>':'<div class="item-rating">리뷰 없음</div>';
                         html += '<div class="item-address">학원에서 ' + distance(item.geometry.location.lat, item.geometry.location.lng) + 'm 거리</div>';
+
+                        // html += '<img src=\"https://maps.googleapis.com/maps/api/place/photo?photoreference="';
+                        // html += item.photos[0].photo_reference;
+                        // html += '"&key=AIzaSyDv0yF-dMGzUxSlJojgLQyWZ4xudsAUX2g&maxheight=400&maxwidth=400\" alt=\"없음\">'
+
                         html += '</div>';
 
                         //사진 추가하기

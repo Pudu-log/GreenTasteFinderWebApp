@@ -49,7 +49,7 @@
                     addHtml += '<img src="' + res.icon + '" alt="' + res.name + '아이콘" class="restaurant-icon">';
                     addHtml += '<div class="restaurant-details">'
 
-                    addHtml += '<h3 class="restaurant-name">' + res.name + '</h3>'
+                    addHtml += '<a href="/detail/' + res.place_id+ '"><h3 class="restaurant-name">' + res.name + '</h3></a>'
                     // addHtml += '<p class="restaurant-address">' + extractKoreanAddress(res.formatted_address) + '</p>';
                     addHtml += '<p class="restaurant-address">' + res.formatted_address + '</p>';
                     addHtml += '<p class="restaurant-phone">📞 ' + res.formatted_phone_number + '</p>';

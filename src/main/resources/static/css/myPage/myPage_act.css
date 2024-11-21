@@ -1,0 +1,109 @@
+/* 메인 리스트 컨테이너 */
+.restaurant-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* 리스트 간격 */
+}
+
+/* 개별 리스트 아이템 */
+.restaurant-item {
+    display: flex;
+    flex-wrap: wrap; /* 화면이 작아지면 줄 바꿈 */
+    align-items: center;
+    background: #fff;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 리스트 아이템 내부의 이미지 */
+.restaurant-icon {
+    flex-shrink: 0; /* 크기 줄어들지 않음 */
+    width: 60px;
+    height: 60px;
+    margin-right: 15px;
+    border-radius: 8px;
+    object-fit: cover; /* 비율 유지하며 크기 조정 */
+}
+
+/* 텍스트 세부 정보 */
+.restaurant-details {
+    flex: 1;
+    min-width: 250px; /* 최소 너비 지정 */
+    word-wrap: break-word; /* 텍스트 줄바꿈 */
+}
+
+/* 가게 이름 스타일 */
+.restaurant-name {
+    margin: 0 0 5px;
+    font-size: 1.2em;
+    color: #FF6347;
+}
+
+/* 주소, 전화번호, 평점, 거리 */
+.restaurant-address,
+.restaurant-phone,
+.restaurant-rating,
+.restaurant-distance {
+    margin: 5px 0;
+    font-size: 0.9em;
+    color: #555;
+}
+
+/* 지도 보기 링크 */
+.map-link {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 5px 10px;
+    font-size: 0.9em;
+    text-decoration: none;
+    color: #fff;
+    background-color: #FF6347;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.map-link:hover {
+    background-color: #FF4500;
+}
+
+/* 이미지 갤러리 */
+.restaurant-images {
+    display: flex;
+    flex-wrap: wrap; /* 작은 화면에서 줄 바꿈 */
+    justify-content: space-around;
+    gap: 10px; /* 이미지 간격 */
+    width: 100%; /* 화면 크기에 맞게 확장 */
+}
+
+/* 갤러리 내부 이미지 */
+.restaurant-images img {
+    /*max-width: 100%; !* 부모 컨테이너 너비에 맞춤 *!*/
+    /*height: auto; !* 높이는 비율 유지 *!*/
+    border-radius: 20px;
+    width: 200px;
+    height: 200px;
+}
+
+/* 반응형 처리 */
+@media (max-width: 768px) {
+    /* 화면이 작아지면 세로 정렬 */
+    .restaurant-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .restaurant-icon {
+        margin-right: 0; /* 오른쪽 여백 제거 */
+        margin-bottom: 10px; /* 아래쪽 여백 추가 */
+    }
+
+    .restaurant-details {
+        text-align: left; /* 텍스트 정렬 왼쪽 */
+        width: 100%; /* 전체 너비 사용 */
+    }
+
+    .restaurant-images {
+        justify-content: center; /* 이미지 중앙 정렬 */
+    }
+}

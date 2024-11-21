@@ -6,8 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class GreenTasteFinderWebAppApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(GreenTasteFinderWebAppApplication.class, args);
-	}
-
+    public static void main(String[] args) {
+        SpringApplication.run(GreenTasteFinderWebAppApplication.class, args);
+    }
 }

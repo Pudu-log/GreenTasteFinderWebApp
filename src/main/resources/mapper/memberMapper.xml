@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.dao.member.IMemberDao">
+    <insert id="memberInsert">
+        INSERT INTO tbl_user (id, pw, name, room_code, email, birth)
+        VALUES (#{member.id}, #{member.pw}, #{member.name}, #{member.roomCode}, #{member.email}, #{member.birth})
+    </insert>
+
+    <select id="selectBox" resultType="RoomDto">
+        SELECT room_code as roomCode, room_name as roomName FROM tbl_room;
+    </select>
+
+    <select id="idCheck" resultType="int">
+        SELECT COUNT(*) FROM tbl_user WHERE id = #{id}
+    </select>
+
+    <select id="login" resultType="MemberDto">
+        SELECT *, room_code as roomCode, admin_yn as adminYn, insert_dt as insertDt, update_dt as updateDt
+        FROM tbl_user WHERE id = #{id} and pw = #{pw}
+    </select>
+
+    <update id="memberUpdate" parameterType="MemberDto">
+        UPDATE tbl_user
+
+        SET
+        name = #{member.name},
+        room_code = #{member.roomCode},
+        birth = #{member.birth},
+        email = #{member.email},
+        pw = #{member.pw},
+        update_dt = NOW()
+
+        WHERE id = #{member.id}
+    </update>
+
+    <delete id="deleteMember">
+        DELETE FROM tbl_user WHERE id = #{id}
+    </delete>
+
+    <select id="getMemberById" resultType="MemberDto">
+        SELECT *, room_code as roomCode, admin_yn as adminYn, insert_dt as insertDt, update_dt as updateDt FROM tbl_user WHERE id = #{id}
+    </select>
+
+    <select id="memberList" resultType="MemberDto">
+        SELECT *, room_code as roomCode, admin_yn as adminYn, insert_dt as insertDt, update_dt as updateDt
+        FROM tbl_user
+        <where>
+            <if test="keyword != null and keyword != ''">
+                (id LIKE CONCAT('%', #{keyword}, '%')
+                OR name LIKE CONCAT('%', #{keyword}, '%')
+                OR room_code LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+        ORDER BY insert_dt
+        LIMIT #{offset}, 10;
+    </select>
+
+
+    <select id="getCount" resultType="int">
+        SELECT COUNT(*)
+        FROM tbl_user
+        <where>
+            <if test="keyword != null and keyword != ''">
+                (id LIKE CONCAT('%', #{keyword}, '%')
+                OR name LIKE CONCAT('%', #{keyword}, '%')
+                OR room_code LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+    </select>
+</mapper>

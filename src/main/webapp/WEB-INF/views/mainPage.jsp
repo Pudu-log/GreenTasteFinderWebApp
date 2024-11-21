@@ -52,7 +52,7 @@
             <div id="memberInfo">
                 <p>
                     <span style="font-size: 12px">
-                        <%= memberId %>
+                        <%= memberId %>님! 
                     </span>
                     <br>오늘의 식사는 무엇인가요?
                 </p>

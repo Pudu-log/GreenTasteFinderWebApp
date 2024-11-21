@@ -15,7 +15,7 @@ View를 렌더링하기 위한 컨트롤러로, 사용자 세션과 클라이언
 @Mapper
 public interface IMainPageDao {
 
-    // 좋아요/즐겨찾기 추가
+    // 좋아요/즐겨찾기 추가(임시)
     int insertAct(@Param("memberId") String id, @Param("storeId") String storeId, @Param("gubn") String gubn);
 
     // 좋아요/즐겨찾기 삭제

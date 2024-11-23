@@ -8,7 +8,6 @@ import java.util.List;
 /* 
 작성자: 구경림
 작성일: 2024.11.20
-작성이유: 
 */
 @Getter
 @Setter

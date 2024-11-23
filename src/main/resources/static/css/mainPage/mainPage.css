@@ -1,34 +1,52 @@
-@charset "UTF-8";
-
 /* 공통 스타일 */
 body {
-    margin: 0 auto;
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
 }
 
 #container {
-    margin-top: 100px;
+    margin-top: 30px;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
+    padding: 0 20px;
 }
 
+/* 식당 리스트 */
 #restaurantList {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 30px;
-    padding: 20px;
-    max-width: 900px;
-    margin: 0 auto;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 10px;
 }
 
 .restaurant {
-    background-color: white;
-    border-radius: 2px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.restaurant:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
 .restaurant img,
@@ -36,35 +54,31 @@ body {
     width: 100%;
     height: 150px;
     object-fit: cover;
-    border-bottom: 1px solid #ddd;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.9rem;
-    color: #666;
     background-color: #f0f0f0;
 }
 
 .no-image {
-    font-size: 0.8em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
     color: #999;
-    text-align: center;
 }
 
 .restaurant-content {
-    padding: 10px;
+    padding: 15px;
     text-align: center;
 }
 
 .restaurant h4 {
-    font-size: 1em;
+    font-size: 1.2rem;
     margin: 10px 0;
-    color: #333;
+    color: #222;
 }
 
 .restaurant p {
     margin: 5px 0;
-    font-size: 0.9em;
+    font-size: 0.9rem;
     color: #666;
 }
 
@@ -76,103 +90,176 @@ body {
 }
 
 .details div {
+    font-size: 0.8rem;
     text-align: center;
-    font-size: 0.8em;
 }
 
 .actions {
     display: flex;
     justify-content: space-around;
     padding: 10px;
+    border-top: 1px solid #eee;
 }
 
 .action-btn {
     cursor: pointer;
     display: flex;
     align-items: center;
-    font-size: 0.8em;
+    font-size: 0.9rem;
+    color: #666;
     transition: color 0.3s, transform 0.3s;
 }
 
+.action-btn:hover {
+    color: #000;
+    transform: scale(1.1);
+}
+
 .action-btn svg {
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
     margin-right: 5px;
 }
 
 .liked svg {
-    fill: red;
+    fill: #ff5252;
 }
 
 .favorited svg {
-    fill: gold;
+    fill: #ffcc00;
 }
 
+/* 태그 스타일 */
+#tagContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+#tagContainer .tag {
+    display: inline-block;
+    padding: 8px 15px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#tagContainer .tag:hover {
+    background-color: #ffeb3b;
+    color: #222;
+}
+#tagContainer .tag.active {
+    background-color: #ffcc00;
+    border-color: #ffcc00;
+}
+
+
+/* 셀렉트 박스 */
+.custom-select-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 200px;
+    margin-top: 10px;
+}
+
+.custom-select {
+    display: block;
+    width: 100%;
+    padding: 10px 15px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23333' d='M10 12l5-5H5l5 5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 12px;
+    cursor: pointer;
+}
+
+.custom-select:hover {
+    background-color: #ffeb3b;
+    color: #333;
+    border-color: #ffcc00;
+}
+
+.custom-select:focus {
+    border-color: #ffcc00;
+    box-shadow: 0 0 5px rgba(255, 204, 0, 0.8);
+}
+
+/* 페이지네이션 */
 .pagination {
-    text-align: center;
-    font-size: 0.6rem;
-    margin: 10px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
 }
 
 .pagination a,
 .pagination span {
     display: inline-block;
     margin: 0 5px;
-    padding: 3px 6px;
-    text-decoration: none;
+    padding: 5px 10px;
+    font-size: 0.9rem;
     color: #333;
     border: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
 }
 
 .pagination a:hover {
-    background-color: #f0f0f0;
+    background-color: #ffeb3b;
+    color: #333;
+    border-color: #ffcc00;
 }
 
 .pagination .current-page {
     font-weight: bold;
     color: white;
-    background-color: #7e8ca0;
-    border-color: #818481;
+    background-color: #ffcc00;
+    border-color: #ffcc00;
 }
 
-#filerAndSerchBox {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-/* 모달 기본 스타일 */
+/* 로딩 스피너 */
 .loading-modal {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* 배경 흐림 효과 */
+    background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000; /* 최상단 */
-    display: none; /* 초기에는 숨김 */
+    z-index: 1000;
+    display: none;
 }
 
-/* 로딩 콘텐츠 */
 .loading-content {
     background: white;
     padding: 20px;
-    border-radius: 8px;
+    border-radius: 10px;
     text-align: center;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
     font-size: 1.2em;
 }
 
-/* 스피너 애니메이션 */
 .spinner {
     margin: 10px auto;
     border: 4px solid rgba(0, 0, 0, 0.1);
-    border-top: 4px solid #3498db; /* 스피너 색상 */
+    border-top: 4px solid #3498db;
     border-radius: 50%;
     width: 40px;
     height: 40px;
@@ -187,17 +274,3 @@ body {
         transform: rotate(360deg);
     }
 }
-
-/* 흐림 효과 */
-.blur {
-    filter: blur(5px); /* 흐림 효과 */
-    pointer-events: none; /* 클릭 방지 */
-}
-#memberInfo {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-
-
-

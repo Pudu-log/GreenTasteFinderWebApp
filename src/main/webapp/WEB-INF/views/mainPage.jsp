@@ -71,16 +71,16 @@
 	                <c:forEach var="restaurant" items="${restaurants}">
 	                    <div class="restaurant" data-store-id="${restaurant.placeId}">
 	                        <!-- 이미지 -->
+	                                <a href="/detail/${restaurant.placeId }">
 	                        <c:choose>
 	                            <c:when test="${not empty restaurant.photoUrl}">
-	                                <a href="/detail/${restaurant.placeId }">
 	                                    <img src="${restaurant.photoUrl}" alt="${restaurant.name} 사진" />
-	                                </a>
 	                            </c:when>
 	                            <c:otherwise>
 	                                  <img src="/static/images/default-restaurant.jpg" alt="기본 이미지" />
 	                            </c:otherwise>
 	                        </c:choose>
+	                                </a>
 	
 	                        <!-- 텍스트 정보 -->
 	                        <div class="restaurant-content">

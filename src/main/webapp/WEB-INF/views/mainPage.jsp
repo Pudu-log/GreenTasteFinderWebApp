@@ -83,7 +83,8 @@
 					<!-- 이미지 -->
 					<a href="/detail/${restaurant.placeId }"> <c:choose>
 							<c:when test="${not empty restaurant.photoUrl}">
-								<img src="${restaurant.photoUrl}" alt="${restaurant.name} 사진" />
+								<img src="<c:out value='${restaurant.photoUrl}' />" alt="${restaurant.name} 사진" />
+
 							</c:when>
 							<c:otherwise>
 								<img src="/static/images/default-restaurant.jpg" alt="기본 이미지" />

@@ -34,7 +34,7 @@ public class MainPageController {
     @GetMapping
     public String getRestaurantsPage(@RequestParam(name = "keyword", required = false) String keyword,
                                      @RequestParam(name = "page", defaultValue = "1") int currentPage,
-                                     @RequestParam(name = "sortBy", defaultValue = "rating") String sortBy,
+                                     @RequestParam(name = "sortBy", defaultValue = "distance") String sortBy,
                                      Model model, HttpServletRequest request) {
 
         HttpSession session = request.getSession(false);

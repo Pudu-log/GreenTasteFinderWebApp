@@ -31,13 +31,6 @@ public class MainPageApiController {
         this.mainPageService = mainPageService;
     } 
 
-    // JSON으로 초기 데이터 반환
-    @GetMapping
-    public ResponseEntity<List<Restaurant>> getInitialRestaurants(@RequestParam String keyword) {
-        List<Restaurant> restaurants = mainPageService.fetchInitialRestaurants(keyword);
-        return ResponseEntity.ok(restaurants);
-    }
-
     @GetMapping("/all")
     public CompletableFuture<ResponseEntity<List<Restaurant>>> getAllRestaurants(
             @RequestParam(name = "keyword", defaultValue = "restaurant") String keyword,

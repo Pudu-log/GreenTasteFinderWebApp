@@ -93,7 +93,7 @@ async function fetchAllRestaurants() {
 
         sessionStorage.setItem('restaurants', JSON.stringify(restaurants));
 
-		 window.location.href = "/?page=1&sortBy=reviewCount&keyword=restaurant";
+		 window.location.href = "/?page=1&sortBy=distance&keyword=restaurant";
     } catch (error) {
         console.error('데이터 로드 중 오류 발생:', error);
     } finally {
@@ -306,7 +306,7 @@ function onTagClick(buttonElement) {
     const keyword = buttonElement.dataset.keyword;
     sessionStorage.setItem('activeTag', keyword);
 
-    onSearchAndSort();
+    onSearchAndSort(keyword);
 }
 
 
@@ -324,11 +324,10 @@ function onTagClick(buttonElement) {
  * @throws {Error} 서버 요청 실패 시 오류를 throw합니다.
  */
 
-async function onSearchAndSort() {
+async function onSearchAndSort(keyword) {
 
     const sortBy = document.getElementById("sortSelect").value;
 	const activeTag = document.querySelector(".tag.active"); // 'active' 클래스가 선택된 태그를 나타냄
-	const keyword = activeTag ? activeTag.getAttribute("data-keyword") : 'restaurant';
 
 	try {
 	    setLoadingState(true);
@@ -341,7 +340,7 @@ async function onSearchAndSort() {
 	    const restaurants = await response.json();
 	    console.log('서버에서 가져온 레스토랑 데이터:', restaurants);
 	    sessionStorage.setItem('restaurants', JSON.stringify(restaurants));
-		 window.location.href = `/?page=1`;
+		window.location.href = `/?page=1`;
 		 
 	} catch (error) {
 	    console.error('데이터 로드 중 오류 발생:', error);

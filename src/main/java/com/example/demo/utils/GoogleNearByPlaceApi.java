@@ -86,15 +86,19 @@ public class GoogleNearByPlaceApi {
 			while (true) {
 				PageData pageData = fetchRestaurantsByPage(keyword, nextPageToken);
 				allRestaurants.addAll(pageData.getRestaurants());
-				nextPageToken = pageData.getNextPageToken();
+				
+				// Google Places API의 next_page_token 활성화를 기다림 (최대 2초)
+				Thread.sleep(2000);
 
+				nextPageToken = pageData.getNextPageToken();
+				System.out.println("검색된 음식점 수" + allRestaurants.size());
+                System.out.println("다음 페이지 토큰: " + nextPageToken);
+                
 				// 다음 페이지 토큰이 없으면 중단
 				if (nextPageToken == null || nextPageToken.isBlank()) {
 					break;
 				}
 
-				// Google Places API의 next_page_token 활성화를 기다림 (최대 2초)
-				Thread.sleep(2000);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

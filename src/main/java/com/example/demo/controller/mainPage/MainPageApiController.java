@@ -25,72 +25,64 @@ import java.util.concurrent.CompletableFuture;
 @RequestMapping("/api/restaurants")
 public class MainPageApiController {
 
-    private final MainPageService mainPageService;
+	private final MainPageService mainPageService;
 
-    public MainPageApiController(MainPageService mainPageService) {
-        this.mainPageService = mainPageService;
-    } 
+	public MainPageApiController(MainPageService mainPageService) {
+		this.mainPageService = mainPageService;
+	}
 
-    @GetMapping("/all")
-    public CompletableFuture<ResponseEntity<List<Restaurant>>> getAllRestaurants(
-            @RequestParam(name = "keyword", defaultValue = "restaurant") String keyword,
-            @RequestParam(name = "memberId", required = false) String memberId,
-            @RequestParam(name = "sortBy", defaultValue = "rating") String sortBy) {
+	@GetMapping("/all")
+	public CompletableFuture<ResponseEntity<List<Restaurant>>> getAllRestaurants(
+			@RequestParam(name = "keyword", defaultValue = "restaurant") String keyword,
+			@RequestParam(name = "memberId", required = false) String memberId,
+			@RequestParam(name = "sortBy", defaultValue = "rating") String sortBy) {
 
-        return mainPageService.fetchAllRestaurants(keyword)
-                .thenApply(restaurants -> {
-                    // 사용자의 좋아요/즐겨찾기 정보를 업데이트
-                    if (memberId != null && !memberId.isEmpty()) {
-                        List<String> likedStores = mainPageService.getUserActions(memberId, "G");
-                        List<String> favoritedStores = mainPageService.getUserActions(memberId, "F");
+		return mainPageService.fetchAllRestaurants(keyword).thenApply(restaurants -> {
+			// 사용자의 좋아요/즐겨찾기 정보를 업데이트
+			if (memberId != null && !memberId.isEmpty()) {
+				List<String> likedStores = mainPageService.getUserActions(memberId, "G");
+				List<String> favoritedStores = mainPageService.getUserActions(memberId, "F");
 
-                        for (Restaurant restaurant : restaurants) {
-                            restaurant.setLiked(likedStores.contains(restaurant.getPlaceId()));
-                            restaurant.setFavorited(favoritedStores.contains(restaurant.getPlaceId()));
-                        }
-                    }
+				for (Restaurant restaurant : restaurants) {
+					restaurant.setLiked(likedStores.contains(restaurant.getPlaceId()));
+					restaurant.setFavorited(favoritedStores.contains(restaurant.getPlaceId()));
+				}
+			}
 
-                    mainPageService.sortRestaurants(restaurants, sortBy);
+			mainPageService.sortRestaurants(restaurants, sortBy);
 
-                    return ResponseEntity.ok(restaurants);
-                });
-    }
+			return ResponseEntity.ok(restaurants);
+		});
+	}
 
-    
-    @PostMapping("/toggle")
-    public ResponseEntity<Void> toggleAction(
-            @RequestParam(name = "memberId") String memberId, 
-            @RequestParam(name = "storeId") String storeId, 
-            @RequestParam(name = "gubn") String gubn) {
-        
-        List<String> actions = mainPageService.getUserActions(memberId, gubn);
-        System.out.println("Member ID: " + memberId);
-        System.out.println("Store ID: " + storeId);
-        System.out.println("Gubn: " + gubn);
-        
-        if (actions.contains(storeId)) {
-            mainPageService.removeUserAction(memberId, storeId, gubn);
-        } else {
-            mainPageService.addUserAction(memberId, storeId, gubn);
-        }
-        
-        return ResponseEntity.ok().build();
-    }
+	@PostMapping("/toggle")
+	public ResponseEntity<Void> toggleAction(@RequestParam(name = "memberId") String memberId,
+			@RequestParam(name = "storeId") String storeId, @RequestParam(name = "gubn") String gubn) {
 
-    @GetMapping("/status")
-    public ResponseEntity<Map<String, List<String>>> getUserActions(
-            @RequestParam(name = "memberId") String memberId) {
-        List<String> likedStores = mainPageService.getUserActions(memberId, "G");
-        List<String> favoritedStores = mainPageService.getUserActions(memberId, "F");
+		List<String> actions = mainPageService.getUserActions(memberId, gubn);
+		System.out.println("Member ID: " + memberId);
+		System.out.println("Store ID: " + storeId);
+		System.out.println("Gubn: " + gubn);
 
-        Map<String, List<String>> status = new HashMap<>();
-        status.put("likedStores", likedStores);
-        status.put("favoritedStores", favoritedStores);
+		if (actions.contains(storeId)) {
+			mainPageService.removeUserAction(memberId, storeId, gubn);
+		} else {
+			mainPageService.addUserAction(memberId, storeId, gubn);
+		}
 
-        return ResponseEntity.ok(status);
-    }
+		return ResponseEntity.ok().build();
+	}
 
-    
-    
+	@GetMapping("/status")
+	public ResponseEntity<Map<String, List<String>>> getUserActions(@RequestParam(name = "memberId") String memberId) {
+		List<String> likedStores = mainPageService.getUserActions(memberId, "G");
+		List<String> favoritedStores = mainPageService.getUserActions(memberId, "F");
+
+		Map<String, List<String>> status = new HashMap<>();
+		status.put("likedStores", likedStores);
+		status.put("favoritedStores", favoritedStores);
+
+		return ResponseEntity.ok(status);
+	}
+
 }
-

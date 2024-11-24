@@ -4,7 +4,7 @@
 작성이유: 캐시를 활용한 데이터 관리 및 효율적 페이지 이동
 */
 const currentPath = window.location.search;
-console.log("현재 경로 >> " +currentPath);
+console.log("현재 경로 >> " + currentPath);
 console.log('테스트233');
 
 let isLoading = false;
@@ -12,20 +12,20 @@ let isLoading = false;
 window.addEventListener('load', async () => {
 	const currentPath = window.location.search;
 
-    if (currentPath === '') {
-        console.log('홈 페이지 로드: 초기 데이터 로딩');
-        await fetchAllRestaurants(true); 
-    } else {
-        console.log('캐시된 데이터로 페이지 렌더링');
-        syncFavoritesAndLikes();	
-    }
+	if (currentPath === '') {
+		console.log('홈 페이지 로드: 초기 데이터 로딩');
+		await fetchAllRestaurants(true);
+	} else {
+		console.log('캐시된 데이터로 페이지 렌더링');
+		syncFavoritesAndLikes();
+	}
 	const params = new URLSearchParams(window.location.search);
 	const keyword = params.get('keyword') || sessionStorage.getItem('activeTag') || '';
 
 	// 키워드가 없으면 기본적으로 #전체 태그를 활성화
 	const tagButton = document.querySelector(`.tag[data-keyword="${keyword}"]`) || document.querySelector(`.tag[data-keyword=""]`);
 	if (tagButton) {
-	    tagButton.classList.add("active");
+		tagButton.classList.add("active");
 	}
 });
 
@@ -60,9 +60,9 @@ document.addEventListener('visibilitychange', async () => {
  */
 
 function setLoadingState(state) {
-    isLoading = state;
-    const spinner = document.getElementById('loadingSpinner');
-    spinner.style.display = isLoading ? 'flex' : 'none';
+	isLoading = state;
+	const spinner = document.getElementById('loadingSpinner');
+	spinner.style.display = isLoading ? 'flex' : 'none';
 }
 
 /**
@@ -79,26 +79,26 @@ function setLoadingState(state) {
  * @throws {Error} 서버 요청 실패 시 오류를 throw합니다.
  */
 async function fetchAllRestaurants() {
-    try {
-        setLoadingState(true);
+	try {
+		setLoadingState(true);
 
-        const memberId = sessionStorage.getItem('memberId');
-        const response = await fetch(`/api/restaurants/all?memberId=${memberId}`);
-        if (!response.ok) {
-            throw new Error('서버 요청 실패: ' + response.statusText);
-        }
+		const memberId = sessionStorage.getItem('memberId');
+		const response = await fetch(`/api/restaurants/all?memberId=${memberId}`);
+		if (!response.ok) {
+			throw new Error('서버 요청 실패: ' + response.statusText);
+		}
 
-        const restaurants = await response.json();
-        console.log('서버에서 가져온 레스토랑 데이터:', restaurants);
+		const restaurants = await response.json();
+		console.log('서버에서 가져온 레스토랑 데이터:', restaurants);
 
-        sessionStorage.setItem('restaurants', JSON.stringify(restaurants));
+		sessionStorage.setItem('restaurants', JSON.stringify(restaurants));
 
-		 window.location.href = "/?page=1&sortBy=distance&keyword=restaurant";
-    } catch (error) {
-        console.error('데이터 로드 중 오류 발생:', error);
-    } finally {
-        setLoadingState(false);
-    }
+		window.location.href = "/?page=1&sortBy=distance&keyword=restaurant";
+	} catch (error) {
+		console.error('데이터 로드 중 오류 발생:', error);
+	} finally {
+		setLoadingState(false);
+	}
 }
 
 
@@ -118,31 +118,31 @@ async function fetchAllRestaurants() {
  */
 
 async function syncFavoritesAndLikes() {
-    const memberId = sessionStorage.getItem('memberId');
-    if (!memberId) return;
+	const memberId = sessionStorage.getItem('memberId');
+	if (!memberId) return;
 
-    try {
-        const response = await fetch(`/api/restaurants/status?memberId=${memberId}`);
-        if (!response.ok) {
-            throw new Error('서버 요청 실패: ' + response.statusText);
-        }
+	try {
+		const response = await fetch(`/api/restaurants/status?memberId=${memberId}`);
+		if (!response.ok) {
+			throw new Error('서버 요청 실패: ' + response.statusText);
+		}
 
-        const { likedStores, favoritedStores } = await response.json();
-        const localLikedStores = JSON.parse(sessionStorage.getItem('likedStores')) || [];
-        const localFavoritedStores = JSON.parse(sessionStorage.getItem('favoritedStores')) || [];
+		const { likedStores, favoritedStores } = await response.json();
+		const localLikedStores = JSON.parse(sessionStorage.getItem('likedStores')) || [];
+		const localFavoritedStores = JSON.parse(sessionStorage.getItem('favoritedStores')) || [];
 
-        if (JSON.stringify(likedStores) !== JSON.stringify(localLikedStores)) {
-            sessionStorage.setItem('likedStores', JSON.stringify(likedStores));
-        }
-        if (JSON.stringify(favoritedStores) !== JSON.stringify(localFavoritedStores)) {
-            sessionStorage.setItem('favoritedStores', JSON.stringify(favoritedStores));
-        }
+		if (JSON.stringify(likedStores) !== JSON.stringify(localLikedStores)) {
+			sessionStorage.setItem('likedStores', JSON.stringify(likedStores));
+		}
+		if (JSON.stringify(favoritedStores) !== JSON.stringify(localFavoritedStores)) {
+			sessionStorage.setItem('favoritedStores', JSON.stringify(favoritedStores));
+		}
 
-        updateUIWithNewStates(likedStores, favoritedStores);
-        console.log('좋아요/즐겨찾기 상태 동기화 완료');
-    } catch (error) {
-        console.error('동기화 중 오류 발생:', error);
-    }
+		updateUIWithNewStates(likedStores, favoritedStores);
+		console.log('좋아요/즐겨찾기 상태 동기화 완료');
+	} catch (error) {
+		console.error('동기화 중 오류 발생:', error);
+	}
 }
 
 /**
@@ -166,7 +166,7 @@ function updateUIWithNewStates(likedStores, favoritedStores) {
 		console.log('UI 업데이트 	- liked 상태:', likedStores.includes(storeId));
 		console.log('UI 업데이트 - favorited 상태:', favoritedStores.includes(storeId));
 		const likeButton = restaurantElement.querySelector('.action-btn[data-type="like"]');
-		
+
 		if (likeButton) {
 			const isLiked = likedStores.includes(storeId);
 			likeButton.classList.toggle('liked', isLiked);
@@ -199,6 +199,7 @@ function updateUIWithNewStates(likedStores, favoritedStores) {
 
 function toggleAction(storeId, actionType, element) {
 	const memberId = sessionStorage.getItem('memberId');
+	console.log("memberId"+memberId);
 	if (!memberId) {
 		alert("로그인된 사용자만 좋아요 또는 즐겨찾기를 할 수 있습니다.");
 		window.location.href = `/login`;
@@ -252,16 +253,16 @@ function toggleAction(storeId, actionType, element) {
  */
 
 function updateLocalStorageWithAction(storeId, actionType, isActive) {
-    const key = actionType === 'G' ? 'likedStores' : 'favoritedStores';
-    let stores = JSON.parse(sessionStorage.getItem(key)) || [];
+	const key = actionType === 'G' ? 'likedStores' : 'favoritedStores';
+	let stores = JSON.parse(sessionStorage.getItem(key)) || [];
 
-    if (isActive) {
-        if (!stores.includes(storeId)) stores.push(storeId);
-    } else {
-        stores = stores.filter(id => id !== storeId);
-    }
+	if (isActive) {
+		if (!stores.includes(storeId)) stores.push(storeId);
+	} else {
+		stores = stores.filter(id => id !== storeId);
+	}
 
-    sessionStorage.setItem(key, JSON.stringify(stores));
+	sessionStorage.setItem(key, JSON.stringify(stores));
 }
 
 /**
@@ -275,13 +276,13 @@ function updateLocalStorageWithAction(storeId, actionType, isActive) {
  */
 
 function onSortChange() {
-    setLoadingState(true);
+	setLoadingState(true);
 
-    const sortBy = document.getElementById("sortSelect").value;
+	const sortBy = document.getElementById("sortSelect").value;
 	const activeTag = document.querySelector(".tag.active"); // 'active' 클래스가 선택된 태그를 나타냄
-    const keyword = activeTag ? activeTag.getAttribute("data-keyword") : 'restaurant';
+	const keyword = activeTag ? activeTag.getAttribute("data-keyword") : 'restaurant';
 	// 페이지를 1로 고정하여 URL 변경
-    window.location.href = `/?page=1&sortBy=${sortBy}`;
+	window.location.href = `/?page=1&sortBy=${sortBy}`;
 }
 
 /**
@@ -298,15 +299,15 @@ function onSortChange() {
  */
 
 function onTagClick(buttonElement) {
-    const tags = document.querySelectorAll(".tag");
-    tags.forEach(tag => tag.classList.remove("active"));
+	const tags = document.querySelectorAll(".tag");
+	tags.forEach(tag => tag.classList.remove("active"));
 
-    buttonElement.classList.add("active");
+	buttonElement.classList.add("active");
 
-    const keyword = buttonElement.dataset.keyword;
-    sessionStorage.setItem('activeTag', keyword);
+	const keyword = buttonElement.dataset.keyword;
+	sessionStorage.setItem('activeTag', keyword);
 
-    onSearchAndSort(keyword);
+	onSearchAndSort(keyword);
 }
 
 
@@ -326,51 +327,25 @@ function onTagClick(buttonElement) {
 
 async function onSearchAndSort(keyword) {
 
-    const sortBy = document.getElementById("sortSelect").value;
+	const sortBy = document.getElementById("sortSelect").value;
 	const activeTag = document.querySelector(".tag.active"); // 'active' 클래스가 선택된 태그를 나타냄
 
 	try {
-	    setLoadingState(true);
-	    const memberId = sessionStorage.getItem('memberId');
-	    const response = await fetch(`/api/restaurants/all?memberId=${memberId}&keyword=${keyword}`);
-	    if (!response.ok) {
-	        throw new Error('서버 요청 실패: ' + response.statusText);
-	    }
+		setLoadingState(true);
+		const memberId = sessionStorage.getItem('memberId');
+		const response = await fetch(`/api/restaurants/all?memberId=${memberId}&keyword=${keyword}`);
+		if (!response.ok) {
+			throw new Error('서버 요청 실패: ' + response.statusText);
+		}
 
-	    const restaurants = await response.json();
-	    console.log('서버에서 가져온 레스토랑 데이터:', restaurants);
-	    sessionStorage.setItem('restaurants', JSON.stringify(restaurants));
+		const restaurants = await response.json();
+		console.log('서버에서 가져온 레스토랑 데이터:', restaurants);
+		sessionStorage.setItem('restaurants', JSON.stringify(restaurants));
 		window.location.href = `/?page=1`;
-		 
+
 	} catch (error) {
-	    console.error('데이터 로드 중 오류 발생:', error);
+		console.error('데이터 로드 중 오류 발생:', error);
 	} finally {
-	    setLoadingState(false);
+		setLoadingState(false);
 	}
 }
-/*
-async function onSearchAndSort() {
-    const sortBy = document.getElementById("sortSelect").value;
-    const keyword = document.getElementById("searchKeyword").value || 'restaurant';
-
-    try {
-        setLoadingState(true);
-
-        const memberId = sessionStorage.getItem('memberId');
-        const response = await fetch(`/api/restaurants/all?sortBy=${sortBy}&keyword=${encodeURIComponent(keyword)}`);
-        if (!response.ok) {
-            throw new Error('검색 요청 실패: ' + response.statusText);
-        }
-
-        const restaurants = await response.json();
-        console.log('검색 결과:', restaurants);
-
-        sessionStorage.setItem('restaurants', JSON.stringify(restaurants));
-        syncFavoritesAndLikes();
-    } catch (error) {
-        console.error('검색 및 정렬 중 오류 발생:', error);
-    } finally {
-        setLoadingState(false);
-    }
-}
-* */

@@ -19,8 +19,12 @@
 	<jsp:include page="./layout/header.jsp"></jsp:include>
 	<jsp:include page="./layout/nav.jsp"></jsp:include>
 	<script type="text/javascript">
-	    const memberId = "${memberId != null ? memberId : ''}";
-	    console.log("Member ID:", memberId);
+		const memberId = "${memberId != null ? memberId : ''}";
+		console.log("Member ID:", memberId);
+	    if (memberId != null) {
+	        sessionStorage.setItem('memberId', memberId);
+	        console.log("Member ID 저장 완료:", sessionStorage.getItem('memberId'));
+	    }
 	</script>
 	<div id="container">
 		<div id="info-box">
@@ -35,10 +39,11 @@
 			<div id="memberInfo">
 				<p>
 					<c:if test="${not empty loginedState}">
-						<span id = "memberId-info-box"> ${member.id}님, 반갑습니다 </span>
+						<span id="memberId-info-box"> ${member.id}님, 반갑습니다 </span>
 						<br>오늘의 점심은 무엇인가요?
-					   	<button id="logoutButton" onclick="location.href='/mainPage/logout'">로그아웃</button>
-   					</c:if>
+					   	<button id="logoutButton"
+							onclick="location.href='/mainPage/logout'">로그아웃</button>
+					</c:if>
 				</p>
 			</div>
 		</div>

@@ -348,7 +348,6 @@ async function onSearchAndSort(keyword) {
 	    setLoadingState(false);
 	}
 }
-
 /*
 async function onSearchAndSort() {
     const sortBy = document.getElementById("sortSelect").value;

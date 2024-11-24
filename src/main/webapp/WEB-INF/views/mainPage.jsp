@@ -19,12 +19,9 @@
 	<jsp:include page="./layout/header.jsp"></jsp:include>
 	<jsp:include page="./layout/nav.jsp"></jsp:include>
 	<script type="text/javascript">
-		    const memberId = "${member != null ? member.id : ''}";
-		    console.log("Member ID:", memberId);
-		    if (memberId) {
-		        sessionStorage.setItem('memberId', memberId);
-		    }
-		</script>
+	    const memberId = "${memberId != null ? memberId : ''}";
+	    console.log("Member ID:", memberId);
+	</script>
 	<div id="container">
 		<div id="info-box">
 			<select id="sortSelect" class="custom-select"
@@ -40,6 +37,7 @@
 					<c:if test="${not empty loginedState}">
 						<span id = "memberId-info-box"> ${member.id}님, 반갑습니다 </span>
 						<br>오늘의 점심은 무엇인가요?
+					   	<button id="logoutButton" onclick="location.href='/mainPage/logout'">로그아웃</button>
    					</c:if>
 				</p>
 			</div>

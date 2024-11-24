@@ -42,6 +42,7 @@ public class MainPageController {
             MemberDto member = (MemberDto) session.getAttribute("member");
             if (member != null && member.getId() != null) {
             	model.addAttribute("loginedState","loginedState");
+            	model.addAttribute("memberId",member.getId());
             	System.out.println("member" + member.getId());
             }
         }
@@ -69,6 +70,15 @@ public class MainPageController {
         model.addAttribute("keyword", keyword);
         model.addAttribute("sortBy", sortBy);  // 선택된 정렬 기준 전달
         return "mainPage";
+    }
+    
+    @GetMapping("/mainPage/logout")
+    public String logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+        return "redirect:/"; 
     }
 
 }

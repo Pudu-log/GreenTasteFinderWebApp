@@ -16,6 +16,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 /* 
 작성자: 구경림
@@ -37,7 +38,8 @@ public class GoogleNearByPlaceApi {
     private static final String BASE_URL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json";
     private static final String FIELDS = "name,geometry,place_id,rating,user_ratings_total,photos,vicinity,opening_hours,price_level,formatted_phone_number";
     private static final String LANGUAGE = "ko"; // 한국어
-
+    private static final AtomicInteger REQUEST_COUNT = new AtomicInteger(0); // 요청 횟수 카운터
+    
     public GoogleNearByPlaceApi(RestTemplate restTemplate, ObjectMapper objectMapper) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
@@ -79,6 +81,9 @@ public class GoogleNearByPlaceApi {
     // 페이지 데이터 가져오기
     private PageData fetchRestaurantsByPage(String keyword, String nextPageToken) {
         try {
+            int currentCount = REQUEST_COUNT.incrementAndGet();
+            System.out.println("API 요청 횟수: " + currentCount);
+        	
             String url = buildUrl(keyword, nextPageToken);
             String response = restTemplate.getForObject(url, String.class);
             JsonNode root = objectMapper.readTree(response);

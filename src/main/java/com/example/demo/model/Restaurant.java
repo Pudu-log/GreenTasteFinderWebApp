@@ -8,7 +8,6 @@ import java.util.List;
 /* 
 작성자: 구경림
 작성일: 2024.11.20
-작성이유: 
 */
 @Getter
 @Setter
@@ -22,10 +21,13 @@ public class Restaurant {
     private String photoUrl;          // 사진 URL
     private List<String> openingHours; // 영업 시간 (목록 형태)
     private boolean openNow = false;  // 현재 영업 중인지 여부
+    private String businessStatus;    // 영업 상태 (운영 중, 폐쇄 등)
     private double rating = 0.0;      // 평점
     private int reviewCount = 0;      // 리뷰 수
     private int priceLevel = -1;      // 가격 수준
     private double distance = 0.0;    // 거리 (사용자와의 거리)
+    private double latitude;          // 위도
+    private double longitude;         // 경도
     private boolean liked = false;    // 좋아요 여부
     private boolean favorited = false; // 즐겨찾기 여부
 }

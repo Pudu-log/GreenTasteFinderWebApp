@@ -1,56 +1,45 @@
 /*
 작성자: 구경림  
-작성일: 2024.11.20  
-작성이유:  
-1. 클라이언트 측에서 음식점 데이터를 관리하고 UI에 반영하기 위한 스크립트.  
-2. 좋아요/즐겨찾기 상태를 서버와 동기화하고, 이벤트 핸들링으로 동적 사용자 경험 제공.  
-
-리팩토링 포인트:  
-- 전부 다...................
-- 좋아요/즐겨찾기 누른 후 새로고침이나 페이지이동, 검색 재정렬 등 수행시 ui에 반영이 초기화되는 문제 있음...
-- 영어로 검색해야하는 문제 있음...
+작성일: 2024.11.23
+작성이유: 캐시를 활용한 데이터 관리 및 효율적 페이지 이동
 */
+const currentPath = window.location.search;
+console.log("현재 경로 >> " + currentPath);
+console.log('테스트233');
 
+let isLoading = false;
 
 window.addEventListener('load', async () => {
-	const isFirstLoad = sessionStorage.getItem('isFirstLoad') !== 'false';
-	let loadCount = parseInt(sessionStorage.getItem('loadCount'));
+	const currentPath = window.location.search;
 
-	// loadCount가 NaN인 경우 초기값 설정
-	if (isNaN(loadCount)) {
-		loadCount = 0;
-	}
-
-	if (loadCount === 0) {
-		// 첫 번째 로드 - 모든 데이터를 서버에서 가져옵니다.
-		console.log('첫 로드입니다. 모든 음식점 데이터를 서버에서 가져옵니다.');
-		await fetchAllRestaurants();
+	if (currentPath === '') {
+		console.log('홈 페이지 로드: 초기 데이터 로딩');
+		await fetchAllRestaurants(true);
 	} else {
-		// 첫 로드가 아닌 경우 좋아요/즐겨찾기 동기화 진행
-		console.log('첫 로드가 아닙니다. 좋아요/즐겨찾기 동기화 진행.');
-		await syncFavoritesAndLikes();
+		console.log('캐시된 데이터로 페이지 렌더링');
+		syncFavoritesAndLikes();
 	}
+	const params = new URLSearchParams(window.location.search);
+	const keyword = params.get('keyword') || sessionStorage.getItem('activeTag') || '';
 
-	// 로드 카운트를 증가시키고 세션 스토리지에 저장합니다.
-	sessionStorage.setItem('loadCount', loadCount + 1);
+	// 키워드가 없으면 기본적으로 #전체 태그를 활성화
+	const tagButton = document.querySelector(`.tag[data-keyword="${keyword}"]`) || document.querySelector(`.tag[data-keyword=""]`);
+	if (tagButton) {
+		tagButton.classList.add("active");
+	}
 });
 
-// << 해시 변경 시 이벤트 처리 >>
-// SPA(Single Page Application) 방식에서 유용한 이벤트입니다. 페이지의 해시(#) 부분이 변경될 때 호출됩니다.
+
 window.addEventListener('hashchange', async () => {
 	console.log('해시 변경 감지, 좋아요/즐겨찾기 동기화 진행');
 	await syncFavoritesAndLikes();
 });
 
-// << 뒤로가기/앞으로 가기 시 이벤트 처리 >>
-// 사용자가 브라우저의 뒤로가기/앞으로 가기를 사용할 때 상태 동기화를 처리합니다.
 window.addEventListener('popstate', async () => {
 	console.log('페이지 변경 감지 (뒤로 가기/앞으로 가기), 좋아요/즐겨찾기 동기화 진행');
 	await syncFavoritesAndLikes();
 });
 
-// << 페이지 활성화 시 이벤트 처리 >>
-// 다른 탭으로 이동 후 다시 돌아오는 경우 상태를 동기화합니다.
 document.addEventListener('visibilitychange', async () => {
 	if (document.visibilityState === 'visible') {
 		console.log('페이지가 다시 활성화됨, 좋아요/즐겨찾기 동기화 진행');
@@ -58,28 +47,42 @@ document.addEventListener('visibilitychange', async () => {
 	}
 });
 
-// 로딩 상태를 관리하는 변수 (로딩 스피너 표시 여부 제어)
-let isLoading = false;
 
-// << 좋아요 토글 함수 >>
-function toggleLike(button) {
-	button.classList.toggle('liked');
+/**
+ * 로딩 상태를 설정하고 로딩 스피너를 표시합니다.
+ * - 비동기 작업 전후에 호출됩니다.
+ * 
+ * 주요 기능:
+ * 1. 로딩 상태를 나타내는 `isLoading` 변수를 업데이트합니다.
+ * 2. 로딩 스피너의 표시 여부를 DOM에서 제어합니다.
+ * 
+ * @param {boolean} state - 로딩 상태 (true: 로딩 중, false: 로딩 완료).
+ */
+
+function setLoadingState(state) {
+	isLoading = state;
+	const spinner = document.getElementById('loadingSpinner');
+	spinner.style.display = isLoading ? 'flex' : 'none';
 }
 
-// << 즐겨찾기 토글 함수 >>
-function toggleFavorite(button) {
-	button.classList.toggle('favorited');
-}
-
-// << 음식점 데이터를 서버에서 가져오는 함수 >>
+/**
+ * 서버에서 모든 음식점 데이터를 가져옵니다.
+ * - 초기 페이지 로드 시 호출되며, 세션 스토리지에 데이터를 저장하고 UI를 업데이트합니다.
+ * - 데이터 로드 중 로딩 스피너를 표시합니다.
+ * 
+ * 주요 기능:
+ * 1. 로그인된 사용자의 ID를 세션 스토리지에서 가져옵니다.
+ * 2. 서버로부터 음식점 데이터를 가져와 세션 스토리지에 캐싱합니다.
+ * 3. 데이터 로드가 완료되면 메인 페이지로 이동합니다.
+ * 
+ * @async
+ * @throws {Error} 서버 요청 실패 시 오류를 throw합니다.
+ */
 async function fetchAllRestaurants() {
 	try {
-		setLoadingState(true); // 로딩 시작
+		setLoadingState(true);
 
-		// 세션 스토리지에서 사용자 ID를 가져옵니다.
 		const memberId = sessionStorage.getItem('memberId');
-
-		// 서버에서 음식점 데이터 가져오기
 		const response = await fetch(`/api/restaurants/all?memberId=${memberId}`);
 		if (!response.ok) {
 			throw new Error('서버 요청 실패: ' + response.statusText);
@@ -88,100 +91,123 @@ async function fetchAllRestaurants() {
 		const restaurants = await response.json();
 		console.log('서버에서 가져온 레스토랑 데이터:', restaurants);
 
-		// 세션 스토리지에 새로운 레스토랑 데이터를 저장합니다.
 		sessionStorage.setItem('restaurants', JSON.stringify(restaurants));
 
-		// 세션 스토리지에서 좋아요/즐겨찾기 상태를 가져옵니다.
-		const likedStores = JSON.parse(sessionStorage.getItem('likedStores')) || [];
-		const favoritedStores = JSON.parse(sessionStorage.getItem('favoritedStores')) || [];
-
-		// 음식점 리스트에 세션 스토리지의 좋아요/즐겨찾기 상태 반영
-		restaurants.forEach(restaurant => {
-			restaurant.liked = likedStores.includes(restaurant.placeId);
-			restaurant.favorited = favoritedStores.includes(restaurant.placeId);
-		});
-
-		console.log('세션 스토리지 좋아요 목록:', likedStores);
-		console.log('세션 스토리지 즐겨찾기 목록:', favoritedStores);
-
-		// 페이지에 음식점 데이터를 표시합니다.
-		displayRestaurants(restaurants);
-
-		console.log('첫 페이지 데이터 로딩 완료');
+		window.location.href = "/?page=1&sortBy=distance&keyword=restaurant";
 	} catch (error) {
 		console.error('데이터 로드 중 오류 발생:', error);
 	} finally {
-		setLoadingState(false); // 로딩 종료
-		// 로딩이 끝난 후 새로고침
-		location.reload();
+		setLoadingState(false);
 	}
 }
 
 
-// << 좋아요/즐겨찾기 상태 동기화 함수 >>
-function syncFavoritesAndLikes() {
+
+/**
+ * 서버와 세션 스토리지 간 좋아요/즐겨찾기 상태를 동기화합니다.
+ * - 로그인된 사용자만 동기화가 진행됩니다.
+ * - 서버 데이터를 기준으로 세션 스토리지 데이터를 업데이트하고, UI를 최신 상태로 유지합니다.
+ * 
+ * 주요 기능:
+ * 1. 서버에서 좋아요 및 즐겨찾기 상태 데이터를 가져옵니다.
+ * 2. 서버 상태와 세션 스토리지 상태를 비교 후 변경된 항목만 업데이트합니다.
+ * 3. UI 요소들을 동기화된 상태에 맞게 업데이트합니다.
+ * 
+ * @async
+ * @throws {Error} 서버 요청 실패 시 오류를 throw합니다.
+ */
+
+async function syncFavoritesAndLikes() {
 	const memberId = sessionStorage.getItem('memberId');
-	if (!memberId) {
-		return; // 로그인되지 않은 상태일 경우 동기화 불필요
+	if (!memberId) return;
+
+	try {
+		const response = await fetch(`/api/restaurants/status?memberId=${memberId}`);
+		if (!response.ok) {
+			throw new Error('서버 요청 실패: ' + response.statusText);
+		}
+
+		const { likedStores, favoritedStores } = await response.json();
+		const localLikedStores = JSON.parse(sessionStorage.getItem('likedStores')) || [];
+		const localFavoritedStores = JSON.parse(sessionStorage.getItem('favoritedStores')) || [];
+
+		if (JSON.stringify(likedStores) !== JSON.stringify(localLikedStores)) {
+			sessionStorage.setItem('likedStores', JSON.stringify(likedStores));
+		}
+		if (JSON.stringify(favoritedStores) !== JSON.stringify(localFavoritedStores)) {
+			sessionStorage.setItem('favoritedStores', JSON.stringify(favoritedStores));
+		}
+
+		updateUIWithNewStates(likedStores, favoritedStores);
+		console.log('좋아요/즐겨찾기 상태 동기화 완료');
+	} catch (error) {
+		console.error('동기화 중 오류 발생:', error);
 	}
-
-	// 서버에서 사용자의 좋아요 및 즐겨찾기 상태를 가져오기
-	fetch(`/api/restaurants/status?memberId=${memberId}`)
-		.then(response => {
-			if (!response.ok) {
-				throw new Error('서버 요청 실패: ' + response.statusText);
-			}
-			return response.json();
-		})
-		.then(({ likedStores, favoritedStores }) => {
-			// 세션 스토리지 상태 가져오기
-			let localLikedStores = JSON.parse(sessionStorage.getItem('likedStores')) || [];
-			let localFavoritedStores = JSON.parse(sessionStorage.getItem('favoritedStores')) || [];
-
-			console.log('서버에서 받아온 좋아요 목록:', likedStores);
-			console.log('서버에서 받아온 즐겨찾기 목록:', favoritedStores);
-
-			// 서버 상태와 세션 상태를 비교 후 동기화 진행
-			let isLikedChanged = JSON.stringify(likedStores) !== JSON.stringify(localLikedStores);
-			let isFavoritedChanged = JSON.stringify(favoritedStores) !== JSON.stringify(localFavoritedStores);
-
-			console.log('좋아요 상태 변경됨:', isLikedChanged);
-			console.log('즐겨찾기 상태 변경됨:', isFavoritedChanged);
-
-			// 상태 변경이 있을 경우 세션 스토리지 업데이트
-			if (isLikedChanged) {
-				sessionStorage.setItem('likedStores', JSON.stringify(likedStores));
-				console.log('세션 스토리지 좋아요 목록 업데이트됨:', likedStores);
-			}
-			if (isFavoritedChanged) {
-				sessionStorage.setItem('favoritedStores', JSON.stringify(favoritedStores));
-				console.log('세션 스토리지 즐겨찾기 목록 업데이트됨:', favoritedStores);
-			}
-
-			// UI 업데이트가 필요한 경우 요소 업데이트
-			if (isLikedChanged || isFavoritedChanged) {
-				updateUIWithNewStates(likedStores, favoritedStores);
-			}
-
-			console.log('페이지 이동 시 세션 스토리지와 서버 데이터 동기화 완료');
-		})
-		.catch(error => {
-			console.error('동기화 중 오류 발생:', error);
-		});
 }
 
-// << 좋아요/즐겨찾기 버튼 클릭 시 서버에 상태 업데이트 요청하는 함수 >>
+/**
+ * 좋아요/즐겨찾기 상태를 기준으로 UI를 업데이트합니다.
+ * - 세션 스토리지 또는 서버 데이터를 기반으로 호출됩니다.
+ * - 각 음식점 요소의 좋아요 및 즐겨찾기 버튼 상태를 동기화합니다.
+ * 
+ * 주요 기능:
+ * 1. 각 음식점의 ID를 기반으로 버튼 상태를 업데이트합니다.
+ * 2. 좋아요 버튼 및 즐겨찾기 버튼의 텍스트와 클래스 상태를 동기화합니다.
+ * 
+ * @param {Array<string>} likedStores - 좋아요가 활성화된 음식점의 ID 배열.
+ * @param {Array<string>} favoritedStores - 즐겨찾기가 활성화된 음식점의 ID 배열.
+ */
+
+function updateUIWithNewStates(likedStores, favoritedStores) {
+	document.querySelectorAll('.restaurant').forEach(restaurantElement => {
+		const storeId = restaurantElement.dataset.storeId;
+
+		console.log('UI 업데이트 - storeId:', storeId);
+		console.log('UI 업데이트 	- liked 상태:', likedStores.includes(storeId));
+		console.log('UI 업데이트 - favorited 상태:', favoritedStores.includes(storeId));
+		const likeButton = restaurantElement.querySelector('.action-btn[data-type="like"]');
+
+		if (likeButton) {
+			const isLiked = likedStores.includes(storeId);
+			likeButton.classList.toggle('liked', isLiked);
+			likeButton.querySelector('span').textContent = isLiked ? '좋아요 취소' : '좋아요';
+		}
+
+		const favoriteButton = restaurantElement.querySelector('.action-btn[data-type="favorite"]');
+		if (favoriteButton) {
+			const isFavorited = favoritedStores.includes(storeId);
+			favoriteButton.classList.toggle('favorited', isFavorited);
+			favoriteButton.querySelector('span').textContent = isFavorited ? '즐겨찾기 취소' : '즐겨찾기';
+		}
+	});
+}
+
+/**
+ * 좋아요 또는 즐겨찾기 버튼 클릭 시 호출되는 함수.
+ * - 서버에 상태 업데이트 요청을 보내고, UI 및 세션 스토리지 상태를 업데이트합니다.
+ * 
+ * 주요 기능:
+ * 1. 로그인된 사용자만 액션을 수행하도록 제한합니다.
+ * 2. 현재 버튼 상태를 확인하고 서버에 업데이트 요청을 보냅니다.
+ * 3. 서버 요청 성공 시, 새로운 상태를 세션 스토리지 및 UI에 반영합니다.
+ * 4. 실패 시 오류를 콘솔에 출력합니다.
+ * 
+ * @param {string} storeId - 변경 대상 음식점의 ID.
+ * @param {string} actionType - 액션 유형 ('G' for 좋아요, 'F' for 즐겨찾기).
+ * @param {HTMLElement} element - 클릭된 버튼 요소.
+ */
+
 function toggleAction(storeId, actionType, element) {
 	const memberId = sessionStorage.getItem('memberId');
+	console.log("memberId"+memberId);
 	if (!memberId) {
-		console.error("로그인된 사용자만 좋아요 또는 즐겨찾기를 할 수 있습니다.");
+		alert("로그인된 사용자만 좋아요 또는 즐겨찾기를 할 수 있습니다.");
+		window.location.href = `/login`;
 		return;
 	}
 
-	// 현재 상태가 좋아요 또는 즐겨찾기인지 확인 (클릭한 버튼 기준)
 	const isActive = element.classList.contains(actionType === 'G' ? 'liked' : 'favorited');
 
-	// 서버에 상태 업데이트 요청
 	fetch('/api/restaurants/toggle', {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -192,13 +218,10 @@ function toggleAction(storeId, actionType, element) {
 				throw new Error('서버 요청 실패: ' + response.statusText);
 			}
 
-			// 서버 업데이트 성공 후 새로운 상태 설정
 			const newState = !isActive;
 
-			// 세션 스토리지 업데이트
 			updateLocalStorageWithAction(storeId, actionType, newState);
 
-			// 클릭한 버튼에 대한 UI 업데이트
 			if (actionType === 'G') {
 				element.classList.toggle('liked', newState);
 				element.querySelector('span').textContent = newState ? "좋아요 취소" : "좋아요";
@@ -214,83 +237,115 @@ function toggleAction(storeId, actionType, element) {
 		});
 }
 
-// << 세션 스토리지에서 좋아요/즐겨찾기 상태 업데이트 함수 >>
-/*
- * 좋아요/즐겨찾기 상태가 변경될 때 세션 스토리지에서 해당 데이터를 업데이트합니다.
+
+/**
+ * 세션 스토리지에서 좋아요/즐겨찾기 상태를 업데이트합니다.
+ * - 버튼 클릭 시 호출되며, 새로운 상태를 세션 스토리지에 반영합니다.
+ * 
+ * 주요 기능:
+ * 1. 좋아요(G) 또는 즐겨찾기(F)의 유형에 따라 상태를 업데이트합니다.
+ * 2. 상태 변경에 따라 음식점 ID를 추가하거나 제거합니다.
+ * 3. 변경된 데이터를 세션 스토리지에 저장합니다.
+ * 
+ * @param {string} storeId - 변경된 상태를 가진 음식점의 ID.
+ * @param {string} actionType - 액션 유형 ('G' for 좋아요, 'F' for 즐겨찾기).
+ * @param {boolean} isActive - 변경 후의 활성화 상태 (true: 활성화, false: 비활성화).
  */
+
 function updateLocalStorageWithAction(storeId, actionType, isActive) {
-	if (actionType === 'G') {
-		// 좋아요 상태 업데이트
-		let likedStores = JSON.parse(sessionStorage.getItem('likedStores')) || [];
-		if (isActive) {
-			if (!likedStores.includes(storeId)) {
-				likedStores.push(storeId);
-			}
-		} else {
-			likedStores = likedStores.filter(id => id !== storeId);
+	const key = actionType === 'G' ? 'likedStores' : 'favoritedStores';
+	let stores = JSON.parse(sessionStorage.getItem(key)) || [];
+
+	if (isActive) {
+		if (!stores.includes(storeId)) stores.push(storeId);
+	} else {
+		stores = stores.filter(id => id !== storeId);
+	}
+
+	sessionStorage.setItem(key, JSON.stringify(stores));
+}
+
+/**
+ * 정렬 옵션 변경 시 호출되는 함수.
+ * - 정렬 옵션을 URL 파라미터에 반영하고 페이지를 새로고침합니다.
+ * 
+ * 주요 기능:
+ * 1. 선택된 정렬 기준을 가져옵니다.
+ * 2. 활성화된 태그의 키워드를 기반으로 검색 쿼리를 생성합니다.
+ * 3. 새로운 정렬 상태와 검색어를 URL에 반영하여 페이지를 새로고침합니다.
+ */
+
+function onSortChange() {
+	setLoadingState(true);
+
+	const sortBy = document.getElementById("sortSelect").value;
+	const activeTag = document.querySelector(".tag.active"); // 'active' 클래스가 선택된 태그를 나타냄
+	const keyword = activeTag ? activeTag.getAttribute("data-keyword") : 'restaurant';
+	// 페이지를 1로 고정하여 URL 변경
+	window.location.href = `/?page=1&sortBy=${sortBy}`;
+}
+
+/**
+ * 태그 버튼 클릭 시 호출되는 함수.
+ * - 선택된 태그를 활성화 상태로 설정하고 검색 결과를 업데이트합니다.
+ * 
+ * 주요 기능:
+ * 1. 모든 태그 버튼의 활성화 상태를 초기화합니다.
+ * 2. 클릭된 태그 버튼을 활성화 상태로 변경합니다.
+ * 3. 선택된 태그의 키워드를 세션 스토리지에 저장합니다.
+ * 4. 정렬 및 검색 로직과 연동하여 결과를 업데이트합니다.
+ * 
+ * @param {HTMLElement} buttonElement - 클릭된 태그 버튼 요소.
+ */
+
+function onTagClick(buttonElement) {
+	const tags = document.querySelectorAll(".tag");
+	tags.forEach(tag => tag.classList.remove("active"));
+
+	buttonElement.classList.add("active");
+
+	const keyword = buttonElement.dataset.keyword;
+	sessionStorage.setItem('activeTag', keyword);
+
+	onSearchAndSort(keyword);
+}
+
+
+/**
+ * 검색 및 정렬을 처리하는 함수.
+ * - 선택된 정렬 기준과 키워드를 기반으로 데이터를 서버에서 가져옵니다.
+ * - 검색 결과를 세션 스토리지에 저장하고 UI를 업데이트합니다.
+ * 
+ * 주요 기능:
+ * 1. 선택된 정렬 기준 및 태그 키워드를 가져옵니다.
+ * 2. 서버로 검색 요청을 보내고 데이터를 가져옵니다.
+ * 3. 가져온 데이터를 세션 스토리지에 저장하고 UI를 업데이트합니다.
+ * 
+ * @async
+ * @throws {Error} 서버 요청 실패 시 오류를 throw합니다.
+ */
+
+async function onSearchAndSort(keyword) {
+
+	const sortBy = document.getElementById("sortSelect").value;
+	const activeTag = document.querySelector(".tag.active"); // 'active' 클래스가 선택된 태그를 나타냄
+
+	try {
+		setLoadingState(true);
+		const memberId = sessionStorage.getItem('memberId');
+		const response = await fetch(`/api/restaurants/all?memberId=${memberId}&keyword=${keyword}`);
+		if (!response.ok) {
+			throw new Error('서버 요청 실패: ' + response.statusText);
 		}
-		sessionStorage.setItem('likedStores', JSON.stringify(likedStores));
-	} else if (actionType === 'F') {
-		// 즐겨찾기 상태 업데이트
-		let favoritedStores = JSON.parse(sessionStorage.getItem('favoritedStores')) || [];
-		if (isActive) {
-			if (!favoritedStores.includes(storeId)) {
-				favoritedStores.push(storeId);
-			}
-		} else {
-			favoritedStores = favoritedStores.filter(id => id !== storeId);
-		}
-		sessionStorage.setItem('favoritedStores', JSON.stringify(favoritedStores));
+
+		const restaurants = await response.json();
+		console.log('서버에서 가져온 레스토랑 데이터:', restaurants);
+		sessionStorage.setItem('restaurants', JSON.stringify(restaurants));
+		window.location.href = `/?page=1`;
+
+	} catch (error) {
+		console.error('데이터 로드 중 오류 발생:', error);
+	} finally {
+		setLoadingState(false);
 	}
 }
-
-// << 좋아요/즐겨찾기 상태에 따라 UI 업데이트 >>
-/*
- * 세션 스토리지에 저장된 데이터를 기준으로 UI 요소들을 업데이트합니다.
- */
-function updateUIWithNewStates(likedStores, favoritedStores) {
-	document.querySelectorAll('.restaurant').forEach(restaurantElement => {
-		const storeId = restaurantElement.dataset.storeId;
-
-		console.log('UI 업데이트 - storeId:', storeId);
-		console.log('UI 업데이트 	- liked 상태:', likedStores.includes(storeId));
-		console.log('UI 업데이트 - favorited 상태:', favoritedStores.includes(storeId));
-
-		// 좋아요 상태 업데이트
-		const likeButton = restaurantElement.querySelector('.action-btn[data-type="like"]');
-		if (likeButton) {
-			const isLiked = likedStores.includes(storeId);
-			likeButton.classList.toggle('liked', isLiked);
-			likeButton.querySelector('span').textContent = isLiked ? '좋아요 취소' : '좋아요';
-		}
-
-		// 즐겨찾기 상태 업데이트
-		const favoriteButton = restaurantElement.querySelector('.action-btn[data-type="favorite"]');
-		if (favoriteButton) {
-			const isFavorited = favoritedStores.includes(storeId);
-			favoriteButton.classList.toggle('favorited', isFavorited);
-			favoriteButton.querySelector('span').textContent = isFavorited ? '즐겨찾기 취소' : '즐겨찾기';
-		}
-	});
-}
-
-// << 로딩 상태 설정 함수 >>
-function setLoadingState(state) {
-	isLoading = state; // 로딩 상태 업데이트
-	const spinner = document.getElementById('loadingSpinner');
-	spinner.style.display = isLoading ? 'flex' : 'none'; // 로딩 스피너 표시 여부 제어
-}
-
-// 정렬 옵션 변경 시 호출되는 함수
-function onSortChange() {
-	const sortBy = document.getElementById("sortSelect").value;
-	const keyword = document.getElementById("searchKeyword").value || 'restaurant';
-
-	// loadCount를 1로 설정하여 이후에는 동기화 진행
-	sessionStorage.setItem('loadCount', 1);
-
-	// 현재 페이지 URL을 변경하여 새로고침
-	window.location.href = `/?sortBy=${sortBy}&keyword=${encodeURIComponent(keyword)}`;
-}
-
-

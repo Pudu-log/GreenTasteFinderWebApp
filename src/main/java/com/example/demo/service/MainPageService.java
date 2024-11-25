@@ -63,6 +63,28 @@ public class MainPageService {
                 });
     }
 
+    /**
+     * 음식점 리스트를 정렬합니다.
+     * @param restaurants 음식점 리스트
+     * @param sortBy 정렬 기준
+     */
+    public void sortRestaurants(List<Restaurant> restaurants, String sortBy) {
+        switch (sortBy) {
+            case "rating":
+                restaurants.sort((r1, r2) -> Double.compare(r2.getRating(), r1.getRating()));
+                break;
+            case "reviewCount":
+                restaurants.sort((r1, r2) -> Integer.compare(r2.getReviewCount(), r1.getReviewCount()));
+                break;
+            case "distance":
+                restaurants.sort((r1, r2) -> Double.compare(r1.getDistance(), r2.getDistance()));
+                break;
+            default:
+                // 기본 정렬 기준 (별점 높은 순)
+                restaurants.sort((r1, r2) -> Double.compare(r2.getRating(), r1.getRating()));
+                break;
+        }
+    }
     // 사용자의 좋아요/즐겨찾기한 가게 목록 가져오기
     public List<String> getUserActions(String memberId, String gubn) {
         return mainPageDao.findUserActions(memberId, gubn);

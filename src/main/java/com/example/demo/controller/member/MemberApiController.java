@@ -18,58 +18,58 @@ import java.util.List;
 @RequestMapping("/api/members")
 public class MemberApiController {
 
-    private final MemberService memberService;
+	private final MemberService memberService;
 
-    @Autowired
-    public MemberApiController(MemberService memberService) {
-        this.memberService = memberService;
-    }
+	@Autowired
+	public MemberApiController(MemberService memberService) {
+		this.memberService = memberService;
+	}
 
-    @PostMapping("/join")
-    public ResponseEntity<ApiResponse<String>> join(@RequestBody MemberDto memberDto) {
-        System.out.println(memberDto);
-        int result = memberService.memberInsert(memberDto);
-        if (result > 0) {
-            return ResponseEntity.ok(new ApiResponse<>(ResponseStatus.SUCCESS, "회원가입 성공"));
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ApiResponse<>(ResponseStatus.BAD_REQUEST, "회원가입 실패"));
-        }
-    }
+	@PostMapping("/join")
+	public ResponseEntity<ApiResponse<String>> join(@RequestBody MemberDto memberDto) {
+		System.out.println(memberDto);
+		int result = memberService.memberInsert(memberDto);
+		if (result > 0) {
+			return ResponseEntity.ok(new ApiResponse<>(ResponseStatus.SUCCESS, "회원가입 성공"));
+		} else {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body(new ApiResponse<>(ResponseStatus.BAD_REQUEST, "회원가입 실패"));
+		}
+	}
 
-    @PostMapping("/login")
-    public ResponseEntity<ApiResponse<String>> login(@RequestBody MemberDto memberDto, HttpServletRequest request) {
-        MemberDto result = memberService.login(memberDto.getId(), memberDto.getPw());
-        if (result != null && !result.getId().trim().isEmpty()) {
-            HttpSession session = request.getSession();
-            session.setAttribute("member", result);
-            session.setMaxInactiveInterval(60 * 60);
+	@PostMapping("/login")
+	public ResponseEntity<ApiResponse<String>> login(@RequestBody MemberDto memberDto, HttpServletRequest request) {
+		MemberDto result = memberService.login(memberDto.getId(), memberDto.getPw());
+		if (result != null && !result.getId().trim().isEmpty()) {
+			HttpSession session = request.getSession();
+			session.setAttribute("member", result);
+			session.setMaxInactiveInterval(60 * 60);
 
-            // ID가 "admin"인 경우 어드민 페이지로 이동
-            if ("admin".equals(result.getId())) {
-                return ResponseEntity.ok(new ApiResponse<>(ResponseStatus.SUCCESS, "/admin"));
-            }
-            // 일반 사용자라면 메인 페이지로 이동
-            return ResponseEntity.ok(new ApiResponse<>(ResponseStatus.SUCCESS, "/"));
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                    new ApiResponse<>(ResponseStatus.BAD_REQUEST, "로그인 실패"));
-        }
-    }
+			// ID가 "admin"인 경우 어드민 페이지로 이동
+			if ("admin".equals(result.getId())) {
+				return ResponseEntity.ok(new ApiResponse<>(ResponseStatus.SUCCESS, "/admin"));
+			}
+			// 일반 사용자라면 메인 페이지로 이동
+			return ResponseEntity.ok(new ApiResponse<>(ResponseStatus.SUCCESS, "/"));
+		} else {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body(new ApiResponse<>(ResponseStatus.BAD_REQUEST, "로그인 실패"));
+		}
+	}
 
-    @GetMapping("/login/select-box")
-    public ResponseEntity<ApiResponse<List<RoomDto>>> selectBox() {
-        List<RoomDto> selectBoxList = memberService.getSelectBox();
-        return ResponseEntity.ok(new ApiResponse<>(ResponseStatus.SUCCESS, selectBoxList));
-    }
+	@GetMapping("/login/select-box")
+	public ResponseEntity<ApiResponse<List<RoomDto>>> selectBox() {
+		List<RoomDto> selectBoxList = memberService.getSelectBox();
+		return ResponseEntity.ok(new ApiResponse<>(ResponseStatus.SUCCESS, selectBoxList));
+	}
 
-    @GetMapping("/login/id-check")
-    public ResponseEntity<ApiResponse<String>> idCheck(@RequestParam("id") String id) {
-        int result = memberService.idCheck(id);
-        if (result > 0) {
-            return ResponseEntity.ok(new ApiResponse<>(ResponseStatus.SUCCESS, "아이디 중복"));
-        } else {
-            return ResponseEntity.ok(new ApiResponse<>(ResponseStatus.SUCCESS, "아이디 사용가능"));
-        }
-    }
+	@GetMapping("/login/id-check")
+	public ResponseEntity<ApiResponse<String>> idCheck(@RequestParam("id") String id) {
+		int result = memberService.idCheck(id);
+		if (result > 0) {
+			return ResponseEntity.ok(new ApiResponse<>(ResponseStatus.SUCCESS, "아이디 중복"));
+		} else {
+			return ResponseEntity.ok(new ApiResponse<>(ResponseStatus.SUCCESS, "아이디 사용가능"));
+		}
+	}
 }
